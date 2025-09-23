@@ -60,22 +60,19 @@ body {
     /* position: fixed; 已被移除 */
 }
         
-  /* 3. 【核心】手机主容器样式：固定在视窗上 */
 #phone-screen {
-    position: fixed; /* <--- 关键修改1：将它固定在屏幕上 */
+    position: fixed; /* 关键1: 将它直接固定在屏幕上 */
     top: 0;
     left: 0;
     right: 0;
-    bottom: 0; /* <--- 关键修改2：这四行代码会强制它填满整个可视区域 */
+    bottom: 0; /* 关键2: 这四行代码会强制它填满整个可视区域 */
     
+    /* 其他样式保持不变，例如: */
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    background-color: #ffffff;
-    
-    /* width 和 height 现在由上面的 top/left/right/bottom 自动控制，不再需要了 */
+    background-color: #ffffff; /* 保留一个默认背景色 */
 }
-        /* ▲▲▲ 【修复结束】 ▲▲▲ */
         #chat-input-area {
             flex-shrink: 0;
             padding: 8px;
