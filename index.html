@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>EPhone</title>
     <!-- ▼▼▼ 【桌面图标】纯HTML单文件方案，请粘贴到 <title> 之后 ▼▼▼ -->
     <!-- 1. (核心) 为苹果设备设置主屏幕图标 -->
@@ -24,7 +24,7 @@
     <link rel="icon" type="image/png" href="https://s3plus.meituan.net/opapisdk/op_ticket_885190757_1756312261242_qdqqd_g0eriz.jpeg">
     <!-- ▲▲▲ 粘贴结束 ▲▲▲ -->
     <meta name="apple-mobile-web-app-capable" content="yes">
- <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <script src="https://unpkg.com/dexie/dist/dexie.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -76,17 +76,20 @@ body {
     /* width 和 height 现在由上面的 top/left/right/bottom 自动控制，不再需要了 */
 }
         /* ▲▲▲ 【修复结束】 ▲▲▲ */
- #chat-input-area {
-    flex-shrink: 0;
-    padding: 8px;
-    /* 核心修改：为底部增加安全距离，防止被小黑条遮挡 */
-    padding-bottom: calc(8px + env(safe-area-inset-bottom));
-    background-color: rgba(247, 247, 247, 0.8);
-    border-top: 1px solid var(--border-color);
-    display: flex;
-    gap: 8px;
-}
-第 2 处修改：防
+        #chat-input-area {
+            flex-shrink: 0;
+            padding: 8px;
+            /* This is the key: adds padding equal to the height of the "black bar" */
+            padding-bottom: calc(8px + env(safe-area-inset-bottom)); 
+            background-color: rgba(247, 247, 247, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
         /* --- End of Replacement Code --- */
 /* --- 【核心修改】这是控制状态栏显隐的新样式 --- */
 
@@ -147,10 +150,7 @@ body {
         @keyframes charge-breath { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
         .screen { width: 100%; height: 100%; position: absolute; top: 0; left: 0; display: flex; flex-direction: column; overflow: hidden; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
         .screen.active { opacity: 1; visibility: visible; z-index: 1; }
-     .header {
-    padding: 15px 20px;
-    padding-top: calc(15px + env(safe-area-inset-top)); 
-}
+        .header { position: relative; z-index: 15; flex-shrink: 0; padding: 15px 20px; padding-top: 45px; background-color: rgba(247, 247, 247, 0.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 18px; font-weight: 600; }
         .header .header-actions { display: flex; align-items: center; gap: 15px; }
         .header .back-btn, .header .action-btn { font-size: 24px; cursor: pointer; width: 30px; text-align: center; color: var(--accent-color); display: flex; align-items: center; justify-content: center; }
         
@@ -165,17 +165,28 @@ body {
         
         /* --- Start of Replacement Code --- */
         
+      /* --- 替换这一整块代码 --- */
 #home-screen {
+    background: linear-gradient(135deg, #6DD5FA, #2980B9);
     background-size: cover;
     background-position: center;
-    display: flex; 
-    flex-direction: column; 
-    box-sizing: border-box; 
-    padding-top: env(safe-area-inset-top); /* <--- 就是这一行 */
-    padding-left: 20px;  /* <-- 添加这一行 */
-    padding-right: 20px; /* <-- 还有这一行 */
+    padding-left: 20px;
+    padding-right: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    overflow: hidden;
+
+    /* ▼▼▼ 【核心修改】在这里添加顶部内边距 ▼▼▼ */
+    /* 这会让背景延伸到屏幕最顶部，覆盖刘海区域 */
+    padding-top: env(safe-area-inset-top);
+
+    /* (这行保持不变，它负责处理底部的安全区) */
+    padding-bottom: env(safe-area-inset-bottom);
 }
-        
         #clock-container {
             text-align: center;
             color: white;
@@ -189,7 +200,7 @@ body {
         /* --- End of Replacement Code --- */
         
         /* 3. 将App图标网格作为一个整体，用 margin 从屏幕底部推上来 */
-      #app-grid {
+        #app-grid {
             margin-top: auto; /* 自动贴紧底部 */
             display: flex;
             flex-direction: column;
@@ -197,10 +208,8 @@ body {
             gap: 20px;
             width: 100%;
             padding: 20px;
-            /* ▼▼▼ 【核心修改】开始 ▼▼▼ */
-            /* 同样地，我们只保留基础的 30px 外边距。 */
-            margin-bottom: 30px; 
-            /* ▲▲▲ 【核心修改】结束 ▲▲▲ */
+            /* 关键：使用 margin-bottom 抬高图标，适配底部“小黑条” */
+            margin-bottom: calc(30px + env(safe-area-inset-bottom)); 
         }
         /* ▲▲▲ 替换结束 ▲▲▲ */
         #main-time {
@@ -342,7 +351,8 @@ body {
         .message-bubble.user { flex-direction: row-reverse; }
         #typing-indicator { align-self: flex-start; display: none; margin: 0 10px 10px; color: var(--text-secondary); }
         
-      #chat-list-bottom-nav {
+        
+        #chat-list-bottom-nav {
             position: absolute;
             bottom: 0;
             left: 0;
@@ -353,23 +363,26 @@ body {
             background-color: rgba(247, 247, 247, 0.9);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            /* ▼▼▼ 【核心修改】开始 ▼▼▼ */
-            /* 直接移除这一行，让它没有任何底部内边距 */
-            /* ▲▲▲ 【核心修改】结束 ▲▲▲ */
+            /* 核心：为底部增加安全距离 */
+            padding-bottom: env(safe-area-inset-bottom);
         }
         #chat-input-main-row { display: flex; align-items: flex-end; gap: 8px; width: 100%; }
         /* --- 请用这块新代码替换旧的 #chat-input 样式 --- */
 #chat-input {
     flex-grow: 1;
     border: none;
-    padding: 10px;
-    border-radius: 18px;
-    background-color: white;
-    resize: none;
-    max-height: 100px;
-    overflow-y: auto;
-    /* 核心修改：将字体大小设置为16px，防止iOS输入时自动缩放页面 */
+    padding: 10px 15px;
+    border-radius: 20px;
+    background-color: var(--secondary-bg);
     font-size: 16px;
+    /* 核心修改 1: 设置一个固定的高度，例如 40px */
+    height: 40px; 
+    /* 核心修改 2: 移除 max-height 属性 */
+    /* max-height: 100px; */ 
+    resize: none;
+    /* 核心修改 3: 当内容超出高度时，显示滚动条 */
+    overflow-y: auto; 
+    box-sizing: border-box; /* 推荐添加，确保内边距计算正确 */
 }
         .action-button { border: none; color: white; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 14px; flex-shrink: 0; }
         #send-btn { background-color: var(--accent-color); height: 40px; padding: 0 15px;}
@@ -859,7 +872,7 @@ body {
         
         .chat-list-item:first-child,
         .chat-group-container:first-child {
-            margin-top: 0px; 
+            margin-top: 10px; 
         }
         
         /* ▲▲▲ 新样式替换结束 ▲▲▲ */
@@ -4376,19 +4389,13 @@ body {
             background-color: #2c2c2e; /* 夜间模式下的置顶背景色 */
         }
         /* ▼▼▼ 修复输入框遮挡按钮的布局问题 ▼▼▼ */
-     #chat-input-area {
-    flex-shrink: 0;
-    padding: 8px;
-    /* 核心修复：确保有下面这一行，并且数值足够大 */
-    padding-bottom: calc(15px + env(safe-area-inset-bottom));
-    background-color: rgba(247, 247, 247, 0.8);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-    border-top: 1px solid var(--border-color);
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
+        #chat-input-area {
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0; /* 防止整个输入区被意外压缩 */
+            background-color: var(--secondary-bg); /* 确保背景色统一，避免透明重叠 */
+        }
+        
         #chat-input-actions-top {
             flex-shrink: 0; /* 防止按钮行被压缩 */
             padding-bottom: 8px; /* 增加一点和输入框的间距，改善观感 */
@@ -6298,37 +6305,40 @@ body {
 /* ▼▼▼ 【布局终极修复】请用这一整块代码，完整替换掉您旧的所有主屏幕和个人资料相关CSS ▼▼▼ */
 
    /* --- 1. 重新定义主屏幕布局，移除垂直内边距 --- */
-    #home-screen {
+        #home-screen {
+            background: linear-gradient(135deg, #6DD5FA, #2980B9);
             background-size: cover;
             background-position: center;
-            display: flex; /* 保持Flex布局 */
-            flex-direction: column; /* 保持垂直排列 */
-            box-sizing: border-box; /* 确保padding计算正确 */
-            /* 核心修复：直接为主屏幕容器添加顶部内边距，为“刘海”留出空间 */
-            padding-top: env(safe-area-inset-top);
-        }
-
-        #app-grid {
-            margin-top: auto; /* 保持：自动推到底部 */
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-            padding: 20px;
-            /* 保持：为底部“小黑条”留出空间 */
-            margin-bottom: calc(30px + env(safe-area-inset-bottom));
-        }
-        /* --- 修复结束 --- */
-        /* --- 2. 将顶部留白改为外边距，应用到内容区 --- */
-        #main-content-area {
-            width: 100%;
+            padding-left: 20px;  /* 保留水平内边距 */
+            padding-right: 20px; /* 保留水平内边距 */
+            box-sizing: border-box;
             display: flex;
             flex-direction: column;
-            gap: 30px; 
+            justify-content: space-between;
             align-items: center;
-            margin-top: calc(20px + env(safe-area-inset-top)); /* 核心修改：使用 margin 代替 padding */
+            height: 100%;
+            overflow: hidden; /* 添加一道保险，强制禁止滚动 */
+            /* ▼▼▼ 【新加的代码】开始 ▼▼▼ */
+            /* 核心修复：在这里为整个主屏幕添加一个底部的内边距。 */
+            /* 这个内边距的高度，正好就是iOS设备底部“小黑条”安全区的高度。 */
+            /* 这样，主屏幕的蓝色渐变背景就能延伸到屏幕的最底部了。 */
+            padding-bottom: env(safe-area-inset-bottom);
+            /* ▲▲▲ 【新加的代码】结束 ▲▲▲ */
         }
 
+        /* --- 2. 将顶部留白改为外边距，应用到内容区 --- */
+      /* --- 替换这一整块代码 --- */
+#main-content-area {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+
+    /* ▼▼▼ 【核心修改】移除这里的安全区外边距 ▼▼▼ */
+    /* 之前的外边距会把背景推开，现在我们只需要保留20px的视觉间距即可 */
+    margin-top: 20px;
+}
         /* --- 3. 个人资料卡片 (所有样式保持不变) --- */
         #profile-widget {
             position: relative;
@@ -7609,27 +7619,6 @@ body {
         /* ▲▲▲ 【新加的代码】结束 ▲▲▲ */
 
 
-    /* --- 适配iPhone刘海和底部安全区域的核心CSS --- */
-#phone-screen {
-    /* 确保主容器是全屏高度 */
-    height: 100vh;
-}
-
-.header {
-    /* 核心：使用 calc() 自动加上顶部的安全距离 */
-    padding-top: calc(15px + env(safe-area-inset-top)); 
-}
-
-#chat-input-area {
-    /* 核心：为底部增加安全距离 */
-    padding-bottom: calc(8px + env(safe-area-inset-bottom));
-}
-
-#app-grid {
-    /* 关键：使用 margin-bottom 抬高主屏幕图标，适配底部“小黑条” */
-    margin-bottom: calc(30px + env(safe-area-inset-bottom)); 
-}
-/* --- 适配结束 --- */
     
     </style>
 </head>
@@ -11091,12 +11080,7 @@ commentActions.forEach(action => {
         /**
          * 【总入口】打开分类管理模态框
          */
-  async function openStickerCategoryManager() {
-            // ▼▼▼ 【新加的代码】开始 ▼▼▼
-            // 核心修复：在打开分类管理器之前，先将主表情面板隐藏起来
-            document.getElementById('sticker-panel').classList.remove('visible');
-            // ▲▲▲ 【新加的代码】结束 ▲▲▲
-
+        async function openStickerCategoryManager() {
             await renderStickerCategoriesInManager();
             document.getElementById('sticker-category-manager-modal').classList.add('visible');
         }
@@ -29786,14 +29770,9 @@ document.getElementById('visual-sticker-upload-input').addEventListener('change'
         document.getElementById('manage-sticker-categories-btn').addEventListener('click', openStickerCategoryManager);
       
                   
-             document.getElementById('close-sticker-category-manager-btn').addEventListener('click', async () => {
+                  document.getElementById('close-sticker-category-manager-btn').addEventListener('click', async () => {
             document.getElementById('sticker-category-manager-modal').classList.remove('visible');
             await renderStickerCategoryTabs(); // 关闭后刷新主面板的分类页签
-
-            // ▼▼▼ 【新加的代码】开始 ▼▼▼
-            // 核心修复：当用户点击“完成”关闭分类管理器时，重新显示主表情面板
-            document.getElementById('sticker-panel').classList.add('visible');
-            // ▲▲▲ 【新加的代码】结束 ▲▲▲
         });
         document.getElementById('add-new-sticker-category-btn').addEventListener('click', addNewStickerCategory);
         document.getElementById('existing-sticker-categories-list').addEventListener('click', (e) => {
