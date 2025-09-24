@@ -76,11 +76,13 @@ body {
     /* width 和 height 现在由上面的 top/left/right/bottom 自动控制，不再需要了 */
 }
         /* ▲▲▲ 【修复结束】 ▲▲▲ */
-        #chat-input-area {
+     #chat-input-area {
             flex-shrink: 0;
             padding: 8px;
-            /* This is the key: adds padding equal to the height of the "black bar" */
-            padding-bottom: calc(8px + env(safe-area-inset-bottom)); 
+            /* ▼▼▼ 【核心修改】开始 ▼▼▼ */
+            /* 我们删除了 calc() 和 env() 部分，只保留了基础的 8px 内边距。 */
+            padding-bottom: 8px; 
+            /* ▲▲▲ 【核心修改】结束 ▲▲▲ */
             background-color: rgba(247, 247, 247, 0.8);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
@@ -191,7 +193,7 @@ body {
         /* --- End of Replacement Code --- */
         
         /* 3. 将App图标网格作为一个整体，用 margin 从屏幕底部推上来 */
-        #app-grid {
+      #app-grid {
             margin-top: auto; /* 自动贴紧底部 */
             display: flex;
             flex-direction: column;
@@ -199,8 +201,10 @@ body {
             gap: 20px;
             width: 100%;
             padding: 20px;
-            /* 关键：使用 margin-bottom 抬高图标，适配底部“小黑条” */
-            margin-bottom: calc(30px + env(safe-area-inset-bottom)); 
+            /* ▼▼▼ 【核心修改】开始 ▼▼▼ */
+            /* 同样地，我们只保留基础的 30px 外边距。 */
+            margin-bottom: 30px; 
+            /* ▲▲▲ 【核心修改】结束 ▲▲▲ */
         }
         /* ▲▲▲ 替换结束 ▲▲▲ */
         #main-time {
@@ -342,8 +346,7 @@ body {
         .message-bubble.user { flex-direction: row-reverse; }
         #typing-indicator { align-self: flex-start; display: none; margin: 0 10px 10px; color: var(--text-secondary); }
         
-        
-        #chat-list-bottom-nav {
+      #chat-list-bottom-nav {
             position: absolute;
             bottom: 0;
             left: 0;
@@ -354,8 +357,9 @@ body {
             background-color: rgba(247, 247, 247, 0.9);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            /* 核心：为底部增加安全距离 */
-            padding-bottom: env(safe-area-inset-bottom);
+            /* ▼▼▼ 【核心修改】开始 ▼▼▼ */
+            /* 直接移除这一行，让它没有任何底部内边距 */
+            /* ▲▲▲ 【核心修改】结束 ▲▲▲ */
         }
         #chat-input-main-row { display: flex; align-items: flex-end; gap: 8px; width: 100%; }
         /* --- 请用这块新代码替换旧的 #chat-input 样式 --- */
