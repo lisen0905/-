@@ -6316,27 +6316,27 @@ body {
 /* ▼▼▼ 【布局终极修复】请用这一整块代码，完整替换掉您旧的所有主屏幕和个人资料相关CSS ▼▼▼ */
 
    /* --- 1. 重新定义主屏幕布局，移除垂直内边距 --- */
-        #home-screen {
-            background: linear-gradient(135deg, #6DD5FA, #2980B9);
+    #home-screen {
             background-size: cover;
             background-position: center;
-            padding-left: 20px;  /* 保留水平内边距 */
-            padding-right: 20px; /* 保留水平内边距 */
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-            height: 100%;
-            overflow: hidden; /* 添加一道保险，强制禁止滚动 */
-            /* ▼▼▼ 【新加的代码】开始 ▼▼▼ */
-            /* 核心修复：在这里为整个主屏幕添加一个底部的内边距。 */
-            /* 这个内边距的高度，正好就是iOS设备底部“小黑条”安全区的高度。 */
-            /* 这样，主屏幕的蓝色渐变背景就能延伸到屏幕的最底部了。 */
-            padding-bottom: env(safe-area-inset-bottom);
-            /* ▲▲▲ 【新加的代码】结束 ▲▲▲ */
+            display: flex; /* 保持Flex布局 */
+            flex-direction: column; /* 保持垂直排列 */
+            box-sizing: border-box; /* 确保padding计算正确 */
+            /* 核心修复：直接为主屏幕容器添加顶部内边距，为“刘海”留出空间 */
+            padding-top: env(safe-area-inset-top);
         }
 
+        #app-grid {
+            margin-top: auto; /* 保持：自动推到底部 */
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+            /* 保持：为底部“小黑条”留出空间 */
+            margin-bottom: calc(30px + env(safe-area-inset-bottom));
+        }
+        /* --- 修复结束 --- */
         /* --- 2. 将顶部留白改为外边距，应用到内容区 --- */
         #main-content-area {
             width: 100%;
