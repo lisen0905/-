@@ -60,19 +60,22 @@ body {
     /* position: fixed; 已被移除 */
 }
         
+  /* 3. 【核心】手机主容器样式：固定在视窗上 */
 #phone-screen {
-    position: fixed; /* 关键1: 将它直接固定在屏幕上 */
+    position: fixed; /* <--- 关键修改1：将它固定在屏幕上 */
     top: 0;
     left: 0;
     right: 0;
-    bottom: 0; /* 关键2: 这四行代码会强制它填满整个可视区域 */
+    bottom: 0; /* <--- 关键修改2：这四行代码会强制它填满整个可视区域 */
     
-    /* 其他样式保持不变，例如: */
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    background-color: #ffffff; 
+    background-color: #ffffff;
+    
+    /* width 和 height 现在由上面的 top/left/right/bottom 自动控制，不再需要了 */
 }
+        /* ▲▲▲ 【修复结束】 ▲▲▲ */
         #chat-input-area {
             flex-shrink: 0;
             padding: 8px;
@@ -7603,59 +7606,7 @@ body {
         }
         /* ▲▲▲ 【新加的代码】结束 ▲▲▲ */
 
-/* --- 临时诊断代码 --- */
-#sticker-panel,
-#music-playlist-panel,
-#chat-lock-overlay {
-    display: none !important;
-}
-    /* --- 手机端可视化调试代码 --- */
 
-/* 给您的整个应用容器一个【紫色】的边框 */
-#phone-screen {
-   outline: 3px solid purple !important;
-   outline-offset: -3px;
-}
-
-/* 给聊天输入区一个【红色】的边框 */
-#chat-input-area {
-    outline: 3px solid red !important;
-}
-
-/* 给表情面板一个【蓝色】的边框 */
-#sticker-panel {
-    outline: 3px solid blue !important;
-}
-
-/* 给音乐播放列表一个【绿色】的边框 */
-#music-playlist-panel {
-    outline: 3px solid green !important;
-}
-
-/* 给聊天锁定遮罩一个【黄色】的边框 */
-#chat-lock-overlay {
-    outline: 3px solid yellow !important;
-}
-         /* --- 【最终修复】强制隐藏所有在表情面板之外的、多余的分类标签栏 --- */
-
-#chat-interface-screen > div#sticker-category-tabs-wrapper {
-    display: none !important;
-}         
-/* --- 【【【最终的、无副作用的修复方案】】】 --- */
-/* 这个规则只在 body 有 .A2HS-fullscreen 这个类时才会生效 */
-body.A2HS-fullscreen #phone-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 100%; /* 使用100%来确保填满 */
-}
-
-/* 同时，我们需要确保 body 本身不会捣乱 */
-body.A2HS-fullscreen {
-    position: static;
-}
     
     </style>
 </head>
@@ -8260,8 +8211,17 @@ body.A2HS-fullscreen {
     <div id="sticker-action-bar" style="display: none;">
         <button id="delete-selected-stickers-btn">删除 (0)</button>
     </div>
-
-<input type="file" id="sticker-upload-input" accept="image/*" style="display: none;">
+</div>
+            <div id="sticker-category-tabs-wrapper">
+        </div>
+    <div id="sticker-grid"></div>
+    <div id="sticker-action-bar" style="display: none;">
+        <button id="delete-selected-stickers-btn">删除 (0)</button>
+    </div>
+</div>
+           
+          
+          <input type="file" id="sticker-upload-input" accept="image/*" style="display: none;">
           <input type="file" id="ai-sticker-upload-input" accept="image/*" multiple hidden>
           <input type="file" id="visual-sticker-upload-input" accept="image/*" multiple hidden> <input type="file" id="image-upload-input" accept="image/*" style="display: none;">
 <div id="music-player-overlay">
@@ -11108,7 +11068,12 @@ commentActions.forEach(action => {
         /**
          * 【总入口】打开分类管理模态框
          */
-        async function openStickerCategoryManager() {
+  async function openStickerCategoryManager() {
+            // ▼▼▼ 【新加的代码】开始 ▼▼▼
+            // 核心修复：在打开分类管理器之前，先将主表情面板隐藏起来
+            document.getElementById('sticker-panel').classList.remove('visible');
+            // ▲▲▲ 【新加的代码】结束 ▲▲▲
+
             await renderStickerCategoriesInManager();
             document.getElementById('sticker-category-manager-modal').classList.add('visible');
         }
@@ -29798,9 +29763,14 @@ document.getElementById('visual-sticker-upload-input').addEventListener('change'
         document.getElementById('manage-sticker-categories-btn').addEventListener('click', openStickerCategoryManager);
       
                   
-                  document.getElementById('close-sticker-category-manager-btn').addEventListener('click', async () => {
+             document.getElementById('close-sticker-category-manager-btn').addEventListener('click', async () => {
             document.getElementById('sticker-category-manager-modal').classList.remove('visible');
             await renderStickerCategoryTabs(); // 关闭后刷新主面板的分类页签
+
+            // ▼▼▼ 【新加的代码】开始 ▼▼▼
+            // 核心修复：当用户点击“完成”关闭分类管理器时，重新显示主表情面板
+            document.getElementById('sticker-panel').classList.add('visible');
+            // ▲▲▲ 【新加的代码】结束 ▲▲▲
         });
         document.getElementById('add-new-sticker-category-btn').addEventListener('click', addNewStickerCategory);
         document.getElementById('existing-sticker-categories-list').addEventListener('click', (e) => {
@@ -30973,15 +30943,6 @@ document.getElementById('forum-customization-form').addEventListener('click', (e
     }
 });
 // ▲▲▲ 【事件监听器添加结束】 ▲▲▲
-
-           
-    // ▼▼▼ 【【【请将这段新代码粘贴到这里】】】 ▼▼▼
-    // 检测是否处于“添加到主屏幕”的独立窗口模式
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-        // 如果是，就给 body 添加我们的特殊 class
-        document.body.classList.add('A2HS-fullscreen');
-    }
-    // ▲▲▲ 【【【粘贴到这里结束】】】 ▲▲▲
         // ▼▼▼ 在 init() 函数末尾添加 ▼▼▼
         if (state.globalSettings.enableBackgroundActivity) {
             startBackgroundSimulation();
