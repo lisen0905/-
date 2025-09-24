@@ -75,20 +75,8 @@ body {
     
     /* width 和 height 现在由上面的 top/left/right/bottom 自动控制，不再需要了 */
 }
-        /* ▲▲▲ 【修复结束】 ▲▲▲ */
- #chat-input-area {
-    flex-shrink: 0;
-    padding: 8px;
-    /* 核心修改：为底部增加安全距离，防止被小黑条遮挡 */
-    padding-bottom: calc(8px + env(safe-area-inset-bottom));
-    background-color: rgba(247, 247, 247, 0.8);
-    border-top: 1px solid var(--border-color);
-    display: flex;
-    gap: 8px;
-}
-第 2 处修改：防
-        /* --- End of Replacement Code --- */
-/* --- 【核心修改】这是控制状态栏显隐的新样式 --- */
+
+    
 
 /* 1. 默认情况下，状态栏依然是隐藏的 */
 #status-bar {
@@ -4375,29 +4363,44 @@ body {
         #phone-screen.dark-mode .chat-list-item.pinned {
             background-color: #2c2c2e; /* 夜间模式下的置顶背景色 */
         }
-        /* ▼▼▼ 修复输入框遮挡按钮的布局问题 ▼▼▼ */
-     #chat-input-area {
-    flex-shrink: 0;
+
+
+/* ▼▼▼ 【聊天输入框最终修复版】▼▼▼ */
+#chat-input-area {
+    position: absolute !important;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: auto !important;
+    z-index: 100 !important;
+    box-sizing: border-box;
     padding: 8px;
-    /* 核心修复：确保有下面这一行，并且数值足够大 */
-    padding-bottom: calc(15px + env(safe-area-inset-bottom));
-    background-color: rgba(247, 247, 247, 0.8);
-    -webkit-backdrop-filter: blur(10px);
+    /* 核心：为您增加了非常大的底部间距，效果会很明显 */
+    padding-bottom: calc(30px + env(safe-area-inset-bottom)) !important;
+    background-color: rgba(247, 247, 247, 0.9);
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border-top: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
     gap: 5px;
 }
-        #chat-input-actions-top {
-            flex-shrink: 0; /* 防止按钮行被压缩 */
-            padding-bottom: 8px; /* 增加一点和输入框的间距，改善观感 */
-        }
-        
-        #chat-input-main-row {
-            flex-shrink: 0; /* 防止输入框行被压缩 */
-        }
-        /* ▲▲▲ 修复结束 ▲▲▲ */
+
+#chat-input {
+    flex-grow: 1;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 20px;
+    background-color: var(--secondary-bg);
+    /* 核心：防止iOS输入时自动缩放页面 */
+    font-size: 16px; 
+    height: 40px; 
+    resize: none;
+    overflow-y: auto; 
+    box-sizing: border-box;
+}
+/* ▲▲▲ 修复结束 ▲▲▲ */
+    
         /* ▼▼▼ 【全新】群聊@功能样式 ▼▼▼ */
         
         /* ▼▼▼ 【核心修复】请用这段代码替换您现有的 #chat-input-area 样式 ▼▼▼ */
