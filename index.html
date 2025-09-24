@@ -24,7 +24,7 @@
     <link rel="icon" type="image/png" href="https://s3plus.meituan.net/opapisdk/op_ticket_885190757_1756312261242_qdqqd_g0eriz.jpeg">
     <!-- ▲▲▲ 粘贴结束 ▲▲▲ -->
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+ <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <script src="https://unpkg.com/dexie/dist/dexie.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -170,31 +170,14 @@ body {
         
         /* --- Start of Replacement Code --- */
         
- #home-screen {
-    /* 1. 核心定位与尺寸 (彻底修复全屏问题) */
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden; /* 防止内部元素意外溢出 */
-
-    /* 2. 内部布局 (让内容上下贴合) */
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; /* 核心：让顶部内容和底部Dock栏上下分开 */
-    align-items: center;
-    box-sizing: border-box;
-
-    /* 3. 背景与边距 */
-    background: linear-gradient(135deg, #6DD5FA, #2980B9);
+#home-screen {
     background-size: cover;
     background-position: center;
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-bottom: env(safe-area-inset-bottom); /* 适配iPhone底部安全区 */
+    display: flex; 
+    flex-direction: column; 
+    box-sizing: border-box; 
+    padding-top: env(safe-area-inset-top); /* <--- 就是这一行 */
 }
-/* ▲▲▲ 替换结束 ▲▲▲ */
         
         #clock-container {
             text-align: center;
