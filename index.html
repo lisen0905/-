@@ -7636,6 +7636,11 @@ body {
 #chat-lock-overlay {
     outline: 3px solid yellow !important;
 }
+         /* --- 【最终修复】强制隐藏所有在表情面板之外的、多余的分类标签栏 --- */
+
+#chat-interface-screen > div#sticker-category-tabs-wrapper {
+    display: none !important;
+}                                                   
     </style>
 </head>
 <body>
