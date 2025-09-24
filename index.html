@@ -7634,7 +7634,18 @@ body {
     margin-bottom: calc(30px + env(safe-area-inset-bottom)); 
 }
 /* --- 适配结束 --- */
-    
+    /* ▼▼▼ 【修复】为设置页面增加底部内边距，防止按钮被遮挡 ▼▼▼ */
+#api-settings-screen .form-container,
+#font-settings-screen .form-container,
+#wallpaper-screen .form-container,
+#chat-settings-screen .form-container,
+#forum-customization-screen .form-container {
+    /* 核心修复：增加一个足够大的底部内边距 */
+    /* 我们使用 calc() 来兼容 iPhone 底部的安全区域 "小黑条" */
+    padding-bottom: calc(40px + env(safe-area-inset-bottom));
+    box-sizing: border-box; /* 确保内边距的计算方式正确 */
+}
+/* ▲▲▲ 修复结束 ▲▲▲ */
     </style>
 </head>
 <body>
