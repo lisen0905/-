@@ -11444,15 +11444,8 @@ async function switchStickerCategory(categoryId, isInitialLoad = false) {
             // 修改点①：我们把控制【顶部栏】和【底部栏】的逻辑分开了
 
             // 单独控制主头部(就是写着“消息”的那个)：它只应该在 'messages-view' (消息页) 显示
-            if (viewId === 'messages-view') {
-                mainHeader.style.display = 'flex';
-            } else {
-                mainHeader.style.display = 'none'; // 在动态、回忆、收藏页，都隐藏这个主头部
-            }
-
-            // 修改点②：让底部导航栏(mainBottomNav)一直显示
-            // 因为这四个页面都需要它，所以我们直接设置为 'flex'，而不是藏起来
-            mainBottomNav.style.display = 'flex';
+        mainHeader.style.display = 'flex';
+mainBottomNav.style.display = 'flex';
             
             // ▲▲▲ 修正结束 ▲▲▲
         
