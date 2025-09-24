@@ -76,22 +76,17 @@ body {
     /* width 和 height 现在由上面的 top/left/right/bottom 自动控制，不再需要了 */
 }
         /* ▲▲▲ 【修复结束】 ▲▲▲ */
-     #chat-input-area {
-            flex-shrink: 0;
-            padding: 8px;
-            /* ▼▼▼ 【核心修改】开始 ▼▼▼ */
-            /* 我们删除了 calc() 和 env() 部分，只保留了基础的 8px 内边距。 */
-            padding-bottom: 8px; 
-            /* ▲▲▲ 【核心修改】结束 ▲▲▲ */
-            background-color: rgba(247, 247, 247, 0.8);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-        
+ #chat-input-area {
+    flex-shrink: 0;
+    padding: 8px;
+    /* 核心修改：为底部增加安全距离，防止被小黑条遮挡 */
+    padding-bottom: calc(8px + env(safe-area-inset-bottom));
+    background-color: rgba(247, 247, 247, 0.8);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    gap: 8px;
+}
+第 2 处修改：防
         /* --- End of Replacement Code --- */
 /* --- 【核心修改】这是控制状态栏显隐的新样式 --- */
 
@@ -367,18 +362,14 @@ body {
 #chat-input {
     flex-grow: 1;
     border: none;
-    padding: 10px 15px;
-    border-radius: 20px;
-    background-color: var(--secondary-bg);
-    font-size: 16px;
-    /* 核心修改 1: 设置一个固定的高度，例如 40px */
-    height: 40px; 
-    /* 核心修改 2: 移除 max-height 属性 */
-    /* max-height: 100px; */ 
+    padding: 10px;
+    border-radius: 18px;
+    background-color: white;
     resize: none;
-    /* 核心修改 3: 当内容超出高度时，显示滚动条 */
-    overflow-y: auto; 
-    box-sizing: border-box; /* 推荐添加，确保内边距计算正确 */
+    max-height: 100px;
+    overflow-y: auto;
+    /* 核心修改：将字体大小设置为16px，防止iOS输入时自动缩放页面 */
+    font-size: 16px;
 }
         .action-button { border: none; color: white; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 14px; flex-shrink: 0; }
         #send-btn { background-color: var(--accent-color); height: 40px; padding: 0 15px;}
@@ -7633,6 +7624,7 @@ body {
     margin-bottom: calc(30px + env(safe-area-inset-bottom)); 
 }
 /* --- 适配结束 --- */
+    
     </style>
 </head>
 <body>
