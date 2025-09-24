@@ -164,8 +164,6 @@ body {
         /* ▼▼▼ 请用这【一整块代码】，完整替换掉您现有的 #home-screen, #clock-container, 和 #app-grid 样式 ▼▼▼ */
         
         /* --- Start of Replacement Code --- */
-        
-      /* --- 替换这一整块代码 --- */
 #home-screen {
     background: linear-gradient(135deg, #6DD5FA, #2980B9);
     background-size: cover;
@@ -179,13 +177,9 @@ body {
     align-items: center;
     height: 100%;
     overflow: hidden;
-
-    /* ▼▼▼ 【核心修改】在这里添加顶部内边距 ▼▼▼ */
-    /* 这会让背景延伸到屏幕最顶部，覆盖刘海区域 */
-    padding-top: env(safe-area-inset-top);
-
-    /* (这行保持不变，它负责处理底部的安全区) */
-    padding-bottom: env(safe-area-inset-bottom);
+    padding-top: env(safe-area-inset-top); /* (保留顶部的内边距) */
+    /* ▼▼▼ 【核心修改】删除下面这一行 ▼▼▼ */
+    /* padding-bottom: env(safe-area-inset-bottom); */
 }
         #clock-container {
             text-align: center;
@@ -6424,23 +6418,20 @@ body {
         #desktop-app-container { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; align-content: start; }
 
      /* --- 5. 将底部留白改为外边距，应用到 Dock 区 --- */
-        #desktop-dock {
-            background-color: rgba(255, 255, 255, 0.15);
-            border-radius: 20px;
-            padding: 15px 25px;
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            width: fit-content;
-            flex-shrink: 0;
-            /* ▼▼▼ 【新代码】修改开始 ▼▼▼ */
-            /* 核心修复：因为主屏幕已经有了 padding-bottom 来处理安全区， */
-            /* 所以我们这里不再需要 env(safe-area-inset-bottom) 了。 */
-            /* 我们只保留 20px 的外边距，让Dock栏和屏幕底部保持一点美观的距离。*/
-            margin-bottom: 20px;
-            /* ▲▲▲ 【新代码】修改结束 ▲▲▲ */
-        }
-        
+      /* --- 替换这一整块代码 --- */
+#desktop-dock {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 15px 25px;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    width: fit-content;
+    flex-shrink: 0;
+    /* ▼▼▼ 【核心修改】在这里加上安全区高度 ▼▼▼ */
+    /* 这样Dock栏就会被从屏幕最底部推上来正确的位置 */
+    margin-bottom: calc(20px + env(safe-area-inset-bottom));
+}
         /* --- 6. 桌面图标 (所有样式保持不变) --- */
         .desktop-app-icon { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; text-align: center; }
         .icon-bg-desktop {
