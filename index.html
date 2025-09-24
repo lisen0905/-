@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>EPhone</title>
     <!-- ▼▼▼ 【桌面图标】纯HTML单文件方案，请粘贴到 <title> 之后 ▼▼▼ -->
     <!-- 1. (核心) 为苹果设备设置主屏幕图标 -->
@@ -152,7 +152,10 @@ body {
         @keyframes charge-breath { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
         .screen { width: 100%; height: 100%; position: absolute; top: 0; left: 0; display: flex; flex-direction: column; overflow: hidden; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
         .screen.active { opacity: 1; visibility: visible; z-index: 1; }
-        .header { position: relative; z-index: 15; flex-shrink: 0; padding: 15px 20px; padding-top: 45px; background-color: rgba(247, 247, 247, 0.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 18px; font-weight: 600; }
+     .header {
+    padding: 15px 20px;
+    padding-top: calc(15px + env(safe-area-inset-top)); 
+}
         .header .header-actions { display: flex; align-items: center; gap: 15px; }
         .header .back-btn, .header .action-btn { font-size: 24px; cursor: pointer; width: 30px; text-align: center; color: var(--accent-color); display: flex; align-items: center; justify-content: center; }
         
@@ -7624,7 +7627,27 @@ body {
         /* ▲▲▲ 【新加的代码】结束 ▲▲▲ */
 
 
-    
+    /* --- 适配iPhone刘海和底部安全区域的核心CSS --- */
+#phone-screen {
+    /* 确保主容器是全屏高度 */
+    height: 100vh;
+}
+
+.header {
+    /* 核心：使用 calc() 自动加上顶部的安全距离 */
+    padding-top: calc(15px + env(safe-area-inset-top)); 
+}
+
+#chat-input-area {
+    /* 核心：为底部增加安全距离 */
+    padding-bottom: calc(8px + env(safe-area-inset-bottom));
+}
+
+#app-grid {
+    /* 关键：使用 margin-bottom 抬高主屏幕图标，适配底部“小黑条” */
+    margin-bottom: calc(30px + env(safe-area-inset-bottom)); 
+}
+/* --- 适配结束 --- */
     </style>
 </head>
 <body>
