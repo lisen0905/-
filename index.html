@@ -71,7 +71,7 @@ body {
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    background-color: #ffffff; /* 保留一个默认背景色 */
+    background-color: #ffffff; 
 }
         #chat-input-area {
             flex-shrink: 0;
@@ -7640,7 +7640,23 @@ body {
 
 #chat-interface-screen > div#sticker-category-tabs-wrapper {
     display: none !important;
-}                                                   
+}         
+/* --- 【【【最终的、无副作用的修复方案】】】 --- */
+/* 这个规则只在 body 有 .A2HS-fullscreen 这个类时才会生效 */
+body.A2HS-fullscreen #phone-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100%; /* 使用100%来确保填满 */
+}
+
+/* 同时，我们需要确保 body 本身不会捣乱 */
+body.A2HS-fullscreen {
+    position: static;
+}
+    
     </style>
 </head>
 <body>
@@ -30957,6 +30973,15 @@ document.getElementById('forum-customization-form').addEventListener('click', (e
     }
 });
 // ▲▲▲ 【事件监听器添加结束】 ▲▲▲
+
+           
+    // ▼▼▼ 【【【请将这段新代码粘贴到这里】】】 ▼▼▼
+    // 检测是否处于“添加到主屏幕”的独立窗口模式
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+        // 如果是，就给 body 添加我们的特殊 class
+        document.body.classList.add('A2HS-fullscreen');
+    }
+    // ▲▲▲ 【【【粘贴到这里结束】】】 ▲▲▲
         // ▼▼▼ 在 init() 函数末尾添加 ▼▼▼
         if (state.globalSettings.enableBackgroundActivity) {
             startBackgroundSimulation();
