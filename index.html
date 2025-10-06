@@ -1688,12 +1688,12 @@
             }
         }
 
-        .wallpaper-preview {
+         .wallpaper-preview {
             width: 100%;
             aspect-ratio: 9 / 16;
-            max-height: 400px;
+            max-height: 200px; /* 修改：将最大高度从 400px 缩小到 300px */
             border-radius: var(--border-radius);
-            margin-bottom: 25px;
+            margin-bottom: 15px; /* 修改：将底部间距从 25px 缩小到 15px */
             background-size: cover;
             background-position: center;
             border: 3px dashed var(--primary-color);
@@ -6568,7 +6568,31 @@ document.getElementById('api-settings-screen').innerHTML = `<header class="app-h
 </form></main>`;
 
 document.getElementById('wallpaper-screen').innerHTML = `<header class="app-header"><button class="back-btn" data-target="home-container">‹</button><div class="title-container"><h1 class="title">更换壁纸</h1></div><div class="placeholder"></div></header><main class="content"><div class="wallpaper-preview" id="wallpaper-preview"><span>当前壁纸预览</span></div><input type="file" id="wallpaper-upload" accept="image/*" style="display: none;"><label for="wallpaper-upload" class="btn btn-primary">从相册选择新壁纸</label></main>`;
-document.getElementById('font-settings-screen').innerHTML = `<header class="app-header"><button class="back-btn" data-target="home-container">‹</button><div class="title-container"><h1 class="title">字体设置</h1></div><div class="placeholder"></div></header><main class="content"><form id="font-settings-form"><div class="form-group"><label for="font-url">字体链接 (ttf, woff, woff2)</label><input type="url" id="font-url" placeholder="https://.../font.ttf" required></div><p style="font-size:12px; color:#888; text-align:center;">示例: https://lf3-static.bytednsdoc.com/obj/eden-cn/jplptk/ljhwZthlaukjlkulzlp/portal/fonts/HarmonyOS_Sans_SC_Regular.woff2</p><button type="submit" class="btn btn-primary">应用字体</button><button type="button" class="btn btn-neutral" id="restore-default-font-btn" style="margin-top: 15px;">恢复默认字体</button></form></main>`;
+// --- 新代码开始 ---
+document.getElementById('font-settings-screen').innerHTML = `<header class="app-header"><button class="back-btn" data-target="home-container">‹</button><div class="title-container"><h1 class="title">字体设置</h1></div><div class="placeholder"></div></header><main class="content">
+    
+    <div id="font-presets-control" style="margin:15px 0; padding:15px; border-radius:12px; border:1px solid #fce4ec; background:#fff8fa;">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+        <label style="color:var(--secondary-color); font-weight:600;">字体预设</label>
+        <select id="font-preset-select" style="flex:1; padding:8px; border-radius:8px; border:1px solid #fce4ec;"></select>
+      </div>
+      <div style="display:flex; gap:8px; justify-content:flex-end;">
+        <button id="font-apply-preset" class="btn btn-primary btn-small">应用</button>
+        <button id="font-save-preset" class="btn btn-secondary btn-small">另存</button>
+        <button id="font-manage-presets" class="btn btn-neutral btn-small">管理</button>
+      </div>
+    </div>
+    <form id="font-settings-form">
+        <div class="form-group">
+            <label for="font-url">字体链接 (ttf, woff, woff2)</label>
+            <input type="url" id="font-url" placeholder="https://.../font.ttf" required>
+        </div>
+        <p style="font-size:12px; color:#888; text-align:center;">示例: https://lf3-static.bytednsdoc.com/obj/eden-cn/jplptk/ljhwZthlaukjlkulzlp/portal/fonts/HarmonyOS_Sans_SC_Regular.woff2</p>
+        <button type="submit" class="btn btn-primary">应用字体</button>
+        <button type="button" class="btn btn-neutral" id="restore-default-font-btn" style="margin-top: 15px;">恢复默认字体</button>
+    </form>
+</main>`;
+// --- 新代码结束 ---
 document.getElementById('customize-screen').innerHTML = `<header class="app-header"><button class="back-btn" data-target="home-container">‹</button><div class="title-container"><h1 class="title">主屏幕自定义</h1></div><div class="placeholder"></div></header><main class="content"><form id="customize-form"></form></main>`;
 document.getElementById('tutorial-screen').innerHTML = `<header class="app-header"><button class="back-btn" data-target="home-container">‹</button><div class="title-container"><h1 class="title">教程</h1></div><div class="placeholder"></div></header><main class="content" id="tutorial-content-area"></main>`;
 // END: 修正动态生成屏幕的返回按钮
@@ -6648,7 +6672,17 @@ const defaultIcons = {
             'night-mode-btn': {name: '', url: 'https://i.postimg.cc/htYvkdQK/chan-146.png'},
             'record-label': { name: '唱片标签 (圆形)', url: 'https://i.postimg.cc/nzP9sgxr/chan-125.png' },
             'record-sleeve': { name: '唱片封套 (方形)', url: 'https://i.postimg.cc/KzC3q4w3/image.png' },
-            'decorative-component': { name: '装饰组件 (方形)', url: '' }
+            'decorative-component': { name: '装饰组件 (方形)', url: '' },
+   // --- 新增：AI手机内部App图标 ---
+            'ai-space-404': { name: '404', icon: 'https://i.postimg.cc/VvQB8dQT/chan-143.png' },
+            'ai-space-browser': { name: '浏览器', icon: 'https://i.postimg.cc/Pq5YQJk8/safari.png' },
+            'ai-space-photos': { name: '照片', icon: 'https://i.postimg.cc/d1sQRp2z/photos.png' },
+            'ai-space-wallet': { name: '钱包', icon: 'https://i.postimg.cc/mkZ1hN3r/wallet.png' },
+            'ai-space-shopping': { name: '购物', icon: 'https://i.postimg.cc/PqYkx23B/shop-icon.png' },
+            'ai-space-memo': { name: '备忘录', icon: 'https://i.postimg.cc/TY4J1j2L/notes.png' },
+            'ai-space-signal': { name: '心动讯号', icon: 'https://i.postimg.cc/tJ0g1C0m/heart.png' },
+            'ai-space-music': { name: '音乐', icon: 'https://i.postimg.cc/d10J4VzR/image.png' },
+            'ai-space-phone': { name: '电话', icon: 'https://i.postimg.cc/W35G2FzW/phone.png' },
         };
 
         let db = {
@@ -7536,6 +7570,7 @@ if (!db.wallet) {
             if (!db.wallpaper) db.wallpaper = 'https://i.postimg.cc/W4Z9R9x4/ins-1.jpg';
             if (!db.wallpaper2) db.wallpaper2 = 'https://i.postimg.cc/W4Z9R9x4/ins-1.jpg'; // 新增
             if (!db.myStickers) db.myStickers = [];
+          if (!db.aiSpaceWallpaper) db.aiSpaceWallpaper = ''; // 为AI手机壁纸初始化默认值
             if (!db.homeScreenMode) db.homeScreenMode = 'night';
             if (!db.worldBooks) db.worldBooks = [];
             if (!db.fontUrl) db.fontUrl = '';
@@ -8749,6 +8784,7 @@ if (db.characters.some(c => c.userDiaries && c.userDiaries.length > 0)) {
             setupTimeSkipSystem();
             setupWorldBookApp();
             setupFontSettingsApp();
+            bindFontPresetUI();
             setupGroupChatSystem();
             setupCustomizeApp();
             setupTutorialApp();
@@ -8781,7 +8817,8 @@ setupHomeScreenPaging(); // 新增：主页翻页
 setupBatchStickerUpload();
 setupMallApp();
 setupPaymentHistoryActions();
-setupAiSpaceApps(); // 新增：初始化AI空间所有App
+setupAiSpaceApps(); // 初始化AI空间所有App
+          applyAiSpaceWallpaper(db.aiSpaceWallpaper); // 新增：应用已保存的AI手机壁紙
 setupSoulBondApp();
 setupDiaryExchangeApp();
 setupBondMissYouHeartFeature();
@@ -11702,7 +11739,23 @@ function applyWallpaper(url, element) {
                 element.style.backgroundImage = `url(${url})`;
             }
         }
-
+// --- 新代码开始 ---
+        function applyAiSpaceWallpaper(url) {
+            const aiSpaceContent = document.querySelector('#ai-space-home-screen .content');
+            if (aiSpaceContent) {
+                if (url) {
+                    aiSpaceContent.style.backgroundImage = `url(${url})`;
+                    aiSpaceContent.style.backgroundSize = 'cover';
+                    aiSpaceContent.style.backgroundPosition = 'center';
+                    aiSpaceContent.style.backgroundColor = ''; // 清除默认背景色
+                } else {
+                    // 如果没有设置壁纸，则恢复默认样式
+                    aiSpaceContent.style.backgroundImage = 'none';
+                    aiSpaceContent.style.backgroundColor = '#f5f5f5';
+                }
+            }
+        }
+// --- 新代码结束 ---
         async function applyHomeScreenMode(mode) {
             if (mode === 'day') {
                 homeScreen.classList.add('day-mode');
@@ -11713,31 +11766,10 @@ function applyWallpaper(url, element) {
             await saveData();
         }
 
-        function setupCustomizeApp() {
-            customizeForm.addEventListener('input', async (e) => {
-                if (e.target.matches('input[type="url"]')) {
-                    const iconId = e.target.dataset.id;
-                    const newUrl = e.target.value.trim();
-                    const previewImg = document.getElementById(`icon-preview-${iconId}`);
-                    if (newUrl) {
-                        db.customIcons[iconId] = newUrl;
-                        previewImg.src = newUrl;
-                        await saveData();
-                        setupHomeScreen();
-                    }
-                }
-            });
-            customizeForm.addEventListener('click', async (e) => {
-                if (e.target.matches('.reset-icon-btn')) {
-                    const iconId = e.target.dataset.id;
-                    delete db.customIcons[iconId];
-                    await saveData();
-                    renderCustomizeForm();
-                    setupHomeScreen();
-                    showToast('图标已重置');
-                }
-            });
-        }
+  function setupCustomizeApp() {
+    // 监听“自定义”App图标的点击事件，以便在每次进入时都重新渲染最新的图标网格
+    document.querySelector('[data-target="customize-screen"]').addEventListener('click', renderCustomizeForm);
+}
 // ▼▼▼ 在 renderCustomizeForm 函数的上方，添加这个新函数 ▼▼▼
 function applyLayoutPreference() {
     const phoneScreen = document.querySelector('.phone-screen');
@@ -11748,116 +11780,199 @@ function applyLayoutPreference() {
     }
 }
 // ▲▲▲ 添加结束 ▲▲▲
-                function renderCustomizeForm() {
-            customizeForm.innerHTML = '';
-            // --- Part 1: 原有的图标自定义功能 ---
-            Object.entries(defaultIcons).forEach(([id, {
-                name,
-                url
-            }]) => {
-                const currentIcon = db.customIcons[id] || url;
-                const itemHTML = `
-                <div class="icon-custom-item">
-                    <img src="${currentIcon}" alt="${name}" class="icon-preview" id="icon-preview-${id}">
-                    <div class="icon-details">
-                        <p>${name || '模式切换'}</p>
-                        <input type="url" class="form-group" placeholder="粘贴新的图标URL" value="${db.customIcons[id] || ''}" data-id="${id}">
-                    </div>
-                    <button type="button" class="reset-icon-btn" data-id="${id}">重置</button>
-                </div>`;
-                customizeForm.insertAdjacentHTML('beforeend', itemHTML);
-            });
+// --- 新代码开始 (完整版，无任何省略) ---
+function renderCustomizeForm() {
+    const form = document.getElementById('customize-form');
+    form.innerHTML = ''; // 清空所有内容，准备重新构建
 
-            // --- Part 2: 新增的全局CSS自定义功能 ---
-            const globalCssHtml = `
-                <hr style="border:none; border-top:1px solid #f0f0f0; margin: 25px 0;">
-                <div class="global-css-section">
-                    <p style="font-weight: 600; font-size: 16px; color: var(--secondary-color); margin-bottom: 5px;">全局样式 (CSS) 自定义</p>
-                    <p style="font-size: 13px; color: #888; margin-top: 0; margin-bottom: 15px;">这里的代码会覆盖整个应用的默认样式，请谨慎使用。</p>
-                    <textarea id="global-custom-css" rows="12" placeholder="/* 示例：修改聊天气泡和对方名字颜色 */\n\n.message-bubble.sent {\n  background: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);\n}\n\n.item-name {\n  color: #6a11cb !important;\n}" style="width: 100%; border-radius: 10px; padding: 10px; border: 2px solid #fce4ec; font-family: monospace; font-size: 13px;"></textarea>
-                    <div style="display: flex; gap: 10px; margin-top: 15px;">
-                        <button type="button" class="btn btn-primary" id="apply-global-css-btn" style="flex: 1;">应用样式</button>
-                        <button type="button" class="btn btn-secondary" id="export-global-css-btn" style="flex: 1; margin-bottom: 0;">导出</button>
-                        <label for="import-css-input" class="btn btn-neutral" style="flex: 1; margin-bottom: 0;">导入</label>
-                    </div>
-                </div>
-                <input type="file" id="import-css-input" accept=".yu, .css, .txt" style="display: none;">
-            `;
-            customizeForm.insertAdjacentHTML('beforeend', globalCssHtml);
-// ... 在 renderCustomizeForm 函数的末尾 ...
-
-// ▼▼▼ 在此添加布局切换开关的HTML和逻辑 ▼▼▼
-const layoutToggleHtml = `
-    <hr style="border:none; border-top:1px solid #f0f0f0; margin: 25px 0;">
-    <div class="icon-custom-item">
-        <div class="icon-details">
-            <p>切换为微信输入栏布局</p>
-            <p style="font-size:12px; color:#888; font-weight:normal;">启用后，聊天输入栏将变为左侧“+”号，右侧发送的样式。</p>
+    // ================== 第1部分：主屏幕图标自定义 ==================
+    const mainGridTitleHtml = `
+        <div style="padding: 0 15px;">
+            <p style="font-weight: 600; font-size: 16px; color: var(--secondary-color); margin-bottom: 5px;">主屏幕及组件图标</p>
         </div>
-        <input type="checkbox" id="toggle-wechat-layout" style="width: auto; height: 24px;">
-    </div>
-`;
-customizeForm.insertAdjacentHTML('beforeend', layoutToggleHtml);
+    `;
+    form.insertAdjacentHTML('beforeend', mainGridTitleHtml);
 
-const layoutToggle = document.getElementById('toggle-wechat-layout');
-layoutToggle.checked = db.useWechatLayout || false;
+    const mainGridContainer = document.createElement('div');
+    mainGridContainer.className = 'app-grid';
+    mainGridContainer.style.gridTemplateColumns = 'repeat(4, 1fr)';
+    mainGridContainer.style.padding = '20px';
+    mainGridContainer.style.gap = '15px';
+    mainGridContainer.style.marginTop = '10px';
+    
+    Object.entries(defaultIcons).forEach(([id, { name, url }]) => {
+        if (id.startsWith('ai-space-')) return; // 排除AI手机的图标
+        const currentIcon = db.customIcons[id] || url;
+        const iconHTML = `
+            <a href="#" class="app-icon" data-icon-id="${id}">
+                <img src="${currentIcon}" alt="${name}" class="icon-img">
+                <span class="app-name">${name || '模式切换'}</span>
+            </a>`;
+        mainGridContainer.innerHTML += iconHTML;
+    });
+    form.appendChild(mainGridContainer);
 
-layoutToggle.addEventListener('change', async (e) => {
-    db.useWechatLayout = e.target.checked;
-    await saveData();
-    applyLayoutPreference(); // 立即应用切换
-    showToast('布局已切换，重新进入聊天室生效');
-});
-// ▲▲▲ 添加结束 ▲▲▲
-            // --- Part 3: 为新功能绑定事件 ---
-            const cssTextarea = document.getElementById('global-custom-css');
-            if (cssTextarea && db.globalCustomCss) {
-                cssTextarea.value = db.globalCustomCss;
-            }
+    // ================== 第2部分：AI手机图标自定义 ==================
+    const aiSpaceGridTitleHtml = `
+        <hr style="border:none; border-top:1px solid #f0f0f0; margin: 25px 0;">
+        <div style="padding: 0 15px;">
+            <p style="font-weight: 600; font-size: 16px; color: var(--secondary-color); margin-bottom: 5px;">AI手机图标</p>
+        </div>
+    `;
+    form.insertAdjacentHTML('beforeend', aiSpaceGridTitleHtml);
 
-            document.getElementById('apply-global-css-btn').addEventListener('click', async () => {
-                const cssCode = cssTextarea.value;
-                db.globalCustomCss = cssCode;
-                applyGlobalCss(cssCode);
-                await saveData();
-                showToast('全局样式已应用并保存！');
-            });
+    const aiSpaceGridContainer = document.createElement('div');
+    aiSpaceGridContainer.className = 'app-grid';
+    aiSpaceGridContainer.style.gridTemplateColumns = 'repeat(4, 1fr)';
+    aiSpaceGridContainer.style.padding = '20px';
+    aiSpaceGridContainer.style.gap = '15px';
+    aiSpaceGridContainer.style.marginTop = '10px';
 
-            document.getElementById('export-global-css-btn').addEventListener('click', () => {
-                const cssCode = cssTextarea.value;
-                if (!cssCode.trim()) {
-                    showToast('没有内容可导出。');
-                    return;
-                }
-                const blob = new Blob([cssCode], {
-                    type: 'text/plain'
-                });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `饭版小手机_美化样式.yu`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            });
+    Object.entries(defaultIcons).forEach(([id, { name, icon }]) => {
+        if (!id.startsWith('ai-space-')) return; // 只选择AI手机的图标
+        const currentIcon = db.customIcons[id] || icon;
+        const iconHTML = `
+            <a href="#" class="app-icon" data-icon-id="${id}">
+                <img src="${currentIcon}" alt="${name}" class="icon-img">
+                <span class="app-name">${name}</span>
+            </a>`;
+        aiSpaceGridContainer.innerHTML += iconHTML;
+    });
+    form.appendChild(aiSpaceGridContainer);
 
-            document.getElementById('import-css-input').addEventListener('change', (event) => {
-                const file = event.target.files[0];
-                if (!file) return;
+    // ================== 第3部分：全局CSS和布局切换 ==================
+    const globalCssHtml = `
+        <hr style="border:none; border-top:1px solid #f0f0f0; margin: 25px 0;">
+        <div class="global-css-section" style="padding: 0 15px;">
+             <p style="font-weight: 600; font-size: 16px; color: var(--secondary-color); margin-bottom: 5px;">全局样式 (CSS) 自定义</p>
+             <p style="font-size: 13px; color: #888; margin-top: 0; margin-bottom: 15px;">这里的代码会覆盖整个应用的默认样式，请谨慎使用。</p>
+            <textarea id="global-custom-css" rows="12" placeholder="/* 示例：修改聊天气泡颜色 */\n\n.message-bubble.sent {\n  background: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);\n}" style="width: 100%; border-radius: 10px; padding: 10px; border: 2px solid #fce4ec; font-family: monospace; font-size: 13px;"></textarea>
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button type="button" class="btn btn-primary" id="apply-global-css-btn" style="flex: 1;">应用样式</button>
+                <button type="button" class="btn btn-secondary" id="export-global-css-btn" style="flex: 1; margin-bottom: 0;">导出</button>
+                <label for="import-css-input" class="btn btn-neutral" style="flex: 1; margin-bottom: 0;">导入</label>
+            </div>
+        </div>
+        <input type="file" id="import-css-input" accept=".yu, .css, .txt" style="display: none;">`;
+    form.insertAdjacentHTML('beforeend', globalCssHtml);
 
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    cssTextarea.value = e.target.result;
-                    showToast('样式已导入，请点击“应用样式”来保存并查看效果。');
-                };
-                reader.onerror = () => {
-                    showToast('读取文件失败。');
-                };
-                reader.readAsText(file);
-                event.target.value = null; 
-            });
+    const layoutToggleHtml = `
+        <hr style="border:none; border-top:1px solid #f0f0f0; margin: 25px 0;">
+        <div class="icon-custom-item" style="padding: 0 15px;">
+            <div class="icon-details">
+                <p>切换为微信输入栏布局</p>
+                <p style="font-size:12px; color:#888; font-weight:normal;">启用后，聊天输入栏将变为左侧“+”号，右侧发送的样式。</p>
+            </div>
+            <input type="checkbox" id="toggle-wechat-layout" style="width: auto; height: 24px;">
+        </div>`;
+    form.insertAdjacentHTML('beforeend', layoutToggleHtml);
+
+    // ================== 第4部分：为所有功能重新绑定事件 ==================
+    
+    const modal = document.getElementById('customize-icon-modal');
+    const fileInput = document.getElementById('customize-icon-upload');
+    const modalTitle = document.getElementById('customize-icon-modal-title');
+    let currentEditingIconId = null;
+
+    form.addEventListener('click', (e) => {
+        const iconLink = e.target.closest('.app-icon[data-icon-id]');
+        if (iconLink) {
+            e.preventDefault();
+            currentEditingIconId = iconLink.dataset.iconId;
+            const iconName = iconLink.querySelector('.app-name').textContent;
+            modalTitle.textContent = `自定义 "${iconName}"`;
+            modal.classList.add('visible');
         }
+    });
+    
+    document.getElementById('icon-edit-from-url-btn').onclick = async () => {
+        const newUrl = prompt('请输入新的图标URL:');
+        if (newUrl && newUrl.trim()) {
+            db.customIcons[currentEditingIconId] = newUrl.trim();
+            await saveData();
+            renderCustomizeForm();
+            setupHomeScreen();
+            renderAiSpaceHomeScreen();
+            showToast('图标已更新');
+        }
+        modal.classList.remove('visible');
+    };
+    document.getElementById('icon-edit-from-local-btn').onclick = () => {
+        fileInput.click();
+        modal.classList.remove('visible');
+    };
+    document.getElementById('icon-edit-reset-btn').onclick = async () => {
+        delete db.customIcons[currentEditingIconId];
+        await saveData();
+        renderCustomizeForm();
+        setupHomeScreen();
+        renderAiSpaceHomeScreen();
+        showToast('图标已恢复默认');
+        modal.classList.remove('visible');
+    };
+    document.getElementById('icon-edit-cancel-btn').onclick = () => modal.classList.remove('visible');
+    modal.onclick = (e) => { if (e.target === modal) modal.classList.remove('visible'); };
+    fileInput.onchange = async (e) => {
+        const file = e.target.files[0];
+        if (file && currentEditingIconId) {
+            try {
+                const compressedUrl = await compressImage(file, { quality: 0.8, maxWidth: 200, maxHeight: 200 });
+                db.customIcons[currentEditingIconId] = compressedUrl;
+                await saveData();
+                renderCustomizeForm();
+                setupHomeScreen();
+                renderAiSpaceHomeScreen();
+                showToast('图标已更新');
+            } catch (error) { showToast('图片处理失败'); }
+        }
+        e.target.value = null;
+    };
+
+    const cssTextarea = document.getElementById('global-custom-css');
+    if (cssTextarea && db.globalCustomCss) {
+        cssTextarea.value = db.globalCustomCss;
+    }
+    document.getElementById('apply-global-css-btn').addEventListener('click', async () => {
+        const cssCode = cssTextarea.value;
+        db.globalCustomCss = cssCode;
+        applyGlobalCss(cssCode);
+        await saveData();
+        showToast('全局样式已应用并保存！');
+    });
+    document.getElementById('export-global-css-btn').addEventListener('click', () => {
+        const cssCode = cssTextarea.value;
+        if (!cssCode.trim()) { showToast('没有内容可导出。'); return; }
+        const blob = new Blob([cssCode], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `饭版小手机_美化样式.yu`;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+    });
+    document.getElementById('import-css-input').addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            cssTextarea.value = e.target.result;
+            showToast('样式已导入，请点击“应用样式”来保存并查看效果。');
+        };
+        reader.readAsText(file);
+        event.target.value = null;
+    });
+
+    const layoutToggle = document.getElementById('toggle-wechat-layout');
+    layoutToggle.checked = db.useWechatLayout || false;
+    layoutToggle.addEventListener('change', async (e) => {
+        db.useWechatLayout = e.target.checked;
+        await saveData();
+        applyLayoutPreference();
+        showToast('布局已切换，重新进入聊天室生效');
+    });
+}
+// --- 新代码结束 ---
+
+// --- 新代码结束 ---
 
         function setupTutorialApp() {
             tutorialContentArea.addEventListener('click', (e) => {
@@ -16323,7 +16438,162 @@ await new Promise(resolve => setTimeout(resolve, 300 + Math.random() * 400));
                 // --- ▲▲▲ 修改结束 ▲▲▲ ---
             });
         }
+// --- 新代码开始 ---
+// ===============================================================
+// START: 字体预设功能
+// ===============================================================
+(function(){
+    if (window._fontPresetsScriptLoaded) return;
+    window._fontPresetsScriptLoaded = true;
 
+    const PRES_KEY = 'fontPresets';
+
+    function _getFontPresets() {
+        try { return JSON.parse(localStorage.getItem(PRES_KEY) || '[]'); }
+        catch(e){ return []; }
+    }
+    function _saveFontPresets(arr) {
+        localStorage.setItem(PRES_KEY, JSON.stringify(arr || []));
+    }
+
+    function populateFontPresetSelect() {
+        const sel = document.getElementById('font-preset-select');
+        if (!sel) return;
+        const presets = _getFontPresets();
+        sel.innerHTML = '<option value="">— 选择一个预设 —</option>';
+        presets.forEach((p) => {
+            const opt = document.createElement('option');
+            opt.value = p.name;
+            opt.textContent = p.name;
+            sel.appendChild(opt);
+        });
+    }
+
+    function saveCurrentFontAsPreset() {
+        const fontUrlEl = document.getElementById('font-url');
+        if (!fontUrlEl) return showToast('找不到字体链接输入框');
+        const url = fontUrlEl.value.trim();
+        if (!url) return showToast('当前字体链接为空，无法保存');
+        
+        let name = prompt('请输入预设名称（将覆盖同名预设）:');
+        if (!name) return;
+
+        const presets = _getFontPresets();
+        const existingPreset = presets.find(p => p.name === name);
+
+        if (existingPreset) {
+            existingPreset.url = url;
+        } else {
+            presets.push({ name, url });
+        }
+        
+        _saveFontPresets(presets);
+        populateFontPresetSelect();
+        showToast('字体预设已保存');
+    }
+
+    function applyFontPreset(presetName) {
+        const presets = _getFontPresets();
+        const preset = presets.find(p => p.name === presetName);
+        if (!preset) {
+            showToast('未找到该预设');
+            return;
+        }
+
+        const fontUrlEl = document.getElementById('font-url');
+        if (fontUrlEl) {
+            fontUrlEl.value = preset.url;
+            // 模拟点击“应用字体”按钮来触发保存和应用逻辑
+            const applyBtn = document.querySelector('#font-settings-form button[type="submit"]');
+            if (applyBtn) {
+                applyBtn.click();
+            } else { // Fallback in case button isn't found
+                db.fontUrl = preset.url;
+                saveData();
+                applyGlobalFont(preset.url);
+                showToast('字体预设已应用！');
+            }
+        }
+    }
+
+    function openManageFontPresetsModal() {
+        const modal = document.getElementById('font-presets-modal');
+        const list = document.getElementById('font-presets-list');
+        if (!modal || !list) return;
+
+        list.innerHTML = '';
+        const presets = _getFontPresets();
+        if (!presets.length) {
+            list.innerHTML = '<p style="color:#888;margin:6px 0;">暂无预设</p>';
+        }
+
+        presets.forEach((p, idx) => {
+            const row = document.createElement('div');
+            row.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0;';
+            
+            const nameDiv = document.createElement('div');
+            nameDiv.textContent = p.name;
+            row.appendChild(nameDiv);
+
+            const btnWrap = document.createElement('div');
+            btnWrap.style.cssText = 'display: flex; gap: 6px;';
+
+            const renameBtn = document.createElement('button');
+            renameBtn.className = 'btn btn-secondary btn-small';
+            renameBtn.textContent = '重命名';
+            renameBtn.onclick = function(){
+                const newName = prompt('输入新名称：', p.name);
+                if (newName && newName.trim()) {
+                    const all = _getFontPresets();
+                    all[idx].name = newName.trim();
+                    _saveFontPresets(all);
+                    openManageFontPresetsModal(); // Refresh the list
+                    populateFontPresetSelect();
+                }
+            };
+
+            const delBtn = document.createElement('button');
+            delBtn.className = 'btn btn-danger btn-small';
+            delBtn.textContent = '删除';
+            delBtn.onclick = function(){
+                if (!confirm(`确定删除预设 "${p.name}" ?`)) return;
+                const all = _getFontPresets();
+                all.splice(idx, 1);
+                _saveFontPresets(all);
+                openManageFontPresetsModal();
+                populateFontPresetSelect();
+            };
+
+            btnWrap.appendChild(renameBtn);
+            btnWrap.appendChild(delBtn);
+            row.appendChild(btnWrap);
+            list.appendChild(row);
+        });
+        modal.style.display = 'flex';
+    }
+
+    // 将UI绑定函数暴露到全局，以便init()可以调用
+    window.bindFontPresetUI = function() {
+        populateFontPresetSelect();
+        document.getElementById('font-apply-preset').addEventListener('click', () => {
+            const val = document.getElementById('font-preset-select').value;
+            if (!val) return showToast('请选择要应用的预设');
+            applyFontPreset(val);
+        });
+        document.getElementById('font-save-preset').addEventListener('click', saveCurrentFontAsPreset);
+        document.getElementById('font-manage-presets').addEventListener('click', openManageFontPresetsModal);
+        document.getElementById('font-close-modal').addEventListener('click', () => {
+            document.getElementById('font-presets-modal').style.display = 'none';
+        });
+
+        // 监听字体设置页面的打开，以便刷新预设列表
+        document.querySelector('.app-icon[data-target="font-settings-screen"]').addEventListener('click', populateFontPresetSelect);
+    }
+})();
+// ===============================================================
+// END: 字体预设功能
+// ===============================================================
+// --- 新代码结束 ---
         function setupFontSettingsApp() {
             fontUrlInput.value = db.fontUrl;
             fontSettingsForm.addEventListener('submit', async (e) => {
@@ -17033,7 +17303,9 @@ function setupApiSettingsApp() {
 }
 
 
+   // --- 新代码开始 ---
         function setupWallpaperApp() {
+            // 新增：添加了第三个壁纸设置区域的HTML
             document.getElementById('wallpaper-screen').innerHTML = `<header class="app-header"><button class="back-btn" data-target="home-container">‹</button><div class="title-container"><h1 class="title">更换壁纸</h1></div><div class="placeholder"></div></header><main class="content">
                 <div class="wallpaper-preview" id="wallpaper-preview"><span>主页壁纸预览</span></div>
                 <input type="file" id="wallpaper-upload" accept="image/*" style="display: none;">
@@ -17042,20 +17314,34 @@ function setupApiSettingsApp() {
                 <div class="wallpaper-preview" id="wallpaper-preview-2"><span>第二页壁纸预览</span></div>
                 <input type="file" id="wallpaper-upload-2" accept="image/*" style="display: none;">
                 <label for="wallpaper-upload-2" class="btn btn-secondary">更换第二页壁纸</label>
+                
+                <hr style="border:none; border-top:1px solid #eee; margin: 25px 0;">
+                <div class="wallpaper-preview" id="wallpaper-preview-ai"><span>AI手机壁纸预览</span></div>
+                <input type="file" id="wallpaper-upload-ai" accept="image/*" style="display: none;">
+                <label for="wallpaper-upload-ai" class="btn btn-neutral">更换AI手机壁纸</label>
             </main>`;
             
             const wallpaperUpload = document.getElementById('wallpaper-upload');
             const wallpaperPreview = document.getElementById('wallpaper-preview');
             const wallpaperUpload2 = document.getElementById('wallpaper-upload-2');
             const wallpaperPreview2 = document.getElementById('wallpaper-preview-2');
+            // 新增：获取新添加的元素
+            const wallpaperUploadAi = document.getElementById('wallpaper-upload-ai');
+            const wallpaperPreviewAi = document.getElementById('wallpaper-preview-ai');
 
             // 设置初始预览
             wallpaperPreview.style.backgroundImage = `url(${db.wallpaper})`;
             wallpaperPreview.textContent = '';
             wallpaperPreview2.style.backgroundImage = `url(${db.wallpaper2})`;
             wallpaperPreview2.textContent = '';
+            // 新增：设置AI手机壁纸的初始预览
+            if (db.aiSpaceWallpaper) {
+                wallpaperPreviewAi.style.backgroundImage = `url(${db.aiSpaceWallpaper})`;
+                wallpaperPreviewAi.textContent = '';
+            }
 
-            // 监听主页壁纸更换
+
+            // 监听主页壁纸更换 (保持不变)
             wallpaperUpload.addEventListener('change', async (e) => {
                 const file = e.target.files[0];
                 if (file) {
@@ -17072,7 +17358,7 @@ function setupApiSettingsApp() {
                 }
             });
 
-            // 监听第二页壁纸更换
+            // 监听第二页壁纸更换 (保持不变)
             wallpaperUpload2.addEventListener('change', async (e) => {
                 const file = e.target.files[0];
                 if (file) {
@@ -17088,7 +17374,26 @@ function setupApiSettingsApp() {
                     }
                 }
             });
+
+            // 新增：监听AI手机壁纸更换
+            wallpaperUploadAi.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    try {
+                        const compressedUrl = await compressImage(file, {quality: 0.85, maxWidth: 1080, maxHeight: 1920});
+                        db.aiSpaceWallpaper = compressedUrl;
+                        applyAiSpaceWallpaper(compressedUrl); // 调用我们新增的函数来应用壁纸
+                        wallpaperPreviewAi.style.backgroundImage = `url(${compressedUrl})`;
+                        wallpaperPreviewAi.textContent = '';
+                        await saveData();
+                        showToast('AI手机壁纸更换成功！');
+                    } catch (s) {
+                        showToast('壁纸压缩失败，请重试');
+                    }
+                }
+            });
         }
+// --- 新代码结束 ---
 
     function renderMyStickers() {
         if (!stickerGridContainer) return; // 安全检查
@@ -23110,26 +23415,29 @@ function setupAiSpaceApps() {
 function renderAiSpaceHomeScreen() {
     const grid = document.getElementById('ai-space-app-grid');
     grid.innerHTML = '';
-    const apps = [
-        { id: '404', name: '404', icon: 'https://i.postimg.cc/VvQB8dQT/chan-143.png' },
-        { id: 'browser', name: '浏览器', icon: 'https://i.postimg.cc/Pq5YQJk8/safari.png' },
-        { id: 'photos', name: '照片', icon: 'https://i.postimg.cc/d1sQRp2z/photos.png' },
-        { id: 'wallet', name: '钱包', icon: 'https://i.postimg.cc/mkZ1hN3r/wallet.png' },
-        { id: 'shopping', name: '购物', icon: 'https://i.postimg.cc/PqYkx23B/shop-icon.png' },
-        { id: 'memo', name: '备忘录', icon: 'https://i.postimg.cc/TY4J1j2L/notes.png' },
-        { id: 'signal', name: '心动讯号', icon: 'https://i.postimg.cc/tJ0g1C0m/heart.png' },
-        { id: 'music', name: '音乐', icon: 'https://i.postimg.cc/d10J4VzR/image.png' }, // 新增
-        { id: 'phone', name: '电话', icon: 'https://i.postimg.cc/W35G2FzW/phone.png' },
+    
+    // 修改：只保留ID列表，不再硬编码图标URL和名称
+    const appIds = [
+        'ai-space-404', 'ai-space-browser', 'ai-space-photos', 'ai-space-wallet',
+        'ai-space-shopping', 'ai-space-memo', 'ai-space-signal', 'ai-space-music', 'ai-space-phone'
     ];
 
-    apps.forEach(app => {
+    appIds.forEach(appId => {
+        // 新增：从中央图标库读取数据
+        const defaultAppInfo = defaultIcons[appId];
+        const customIconUrl = db.customIcons[appId];
+        const finalIconUrl = customIconUrl || defaultAppInfo.icon;
+        const appName = defaultAppInfo.name;
+        // appId 里的 'ai-space-' 前缀只是为了区分，实际功能ID不需要这个前缀
+        const functionalAppId = appId.replace('ai-space-', ''); 
+
         const iconEl = document.createElement('a');
         iconEl.href = '#';
         iconEl.className = 'app-icon';
-        iconEl.dataset.appId = app.id;
+        iconEl.dataset.appId = functionalAppId; // 使用不带前缀的ID来触发功能
         iconEl.innerHTML = `
-            <img src="${app.icon}" alt="${app.name}" class="icon-img">
-            <span class="app-name">${app.name}</span>
+            <img src="${finalIconUrl}" alt="${appName}" class="icon-img">
+            <span class="app-name">${appName}</span>
         `;
         grid.appendChild(iconEl);
     });
@@ -25269,6 +25577,15 @@ window.handleTheaterClick = function(element, action, targetSelector, value) {
     animation: highlight-fade 2s ease-out forwards;
     border-radius: 10px;
 }
+/* --- 修改：字体预设按钮大小统一修复 --- */
+#font-presets-control .btn-small {
+    flex: 1; /* 让三个按钮平分空间，宽度强制保持一致 */
+    height: 38px; /* 新增：强制设定一个统一的高度 */
+    padding-top: 0; /* 新增：配合固定高度，重置上下内边距 */
+    padding-bottom: 0; /* 新增：配合固定高度，重置上下内边距 */
+    line-height: 38px; /* 新增：让文字在固定高度的按钮内垂直居中 */
+}
+/* --- 修复结束 --- */
 </style>
 
 <div class="icity-moments-wrap" id="icity-moments-wrap">
@@ -28928,6 +29245,20 @@ fileInput.addEventListener('change', async (e)=>{
 </div>
 <input type="file" id="home-profile-image-upload" accept="image/*" style="display:none;">
 
+
+<div id="customize-icon-modal" class="modal-overlay">
+    <div class="modal-window">
+        <h3 id="customize-icon-modal-title">自定义图标</h3>
+        <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 25px;">
+            <button class="btn btn-primary" id="icon-edit-from-url-btn">输入网络URL</button>
+            <button class="btn btn-secondary" id="icon-edit-from-local-btn">从本地上传</button>
+            <button class="btn btn-danger" id="icon-edit-reset-btn" style="margin-top: 10px;">恢复默认</button>
+            <button class="btn btn-neutral" id="icon-edit-cancel-btn">取消</button>
+        </div>
+    </div>
+</div>
+<input type="file" id="customize-icon-upload" accept="image/*" style="display:none;">
+  
 <!-- 在 </body> 之前添加 -->
 
 
@@ -30528,6 +30859,18 @@ fileInput.addEventListener('change', async (e)=>{
 <!-- =============================================================== -->
 <!-- END: 心灵羁绊 - 番茄钟 V2.1 功能模块 -->
 <!-- =============================================================== -->
+
+
+<div id="font-presets-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-window" style="max-width:520px;">
+        <h3 style="margin:0 0 10px 0;">管理字体预设</h3>
+        <div id="font-presets-list" style="max-height:340px; overflow:auto; margin-bottom:12px;"></div>
+        <div style="display:flex; gap:8px; justify-content:flex-end;">
+            <button id="font-close-modal" class="btn btn-primary" style="padding:8px 12px;">关闭</button>
+        </div>
+    </div>
+</div>
+  
 </body>
 
 </html>
