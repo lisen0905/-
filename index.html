@@ -7426,10 +7426,15 @@ const locationBtn = document.getElementById('location-btn'),
             const dbData = data ? data : db;
 
             // 分离消息数据和基础数据
-            const { characters, groups, ...baseData } = dbData;
+              const { characters, groups, worldBooks, ...baseData } = dbData;
 
             // 保存基础数据
             await dataStorage.saveData('章鱼喷墨机', baseData);
+            // 新增：单独保存 worldBooks 数组
+            if (worldBooks) {
+                await dataStorage.saveData('worldBooks_data', worldBooks);
+            }
+
 
             // 分别保存角色和群组数据（包含消息）
             if (characters) {
@@ -7546,6 +7551,12 @@ if (!db.homeProfile) {
             if (!db.forumData) {
                 db.forumData = {};
             }
+                // --- 在这里单独加载世界书 ---
+            const loadedWorldBooks = await dataStorage.getData('worldBooks_data');
+            db.worldBooks = loadedWorldBooks || [];
+            if (!db.worldBooks) db.worldBooks = []; // 兼容性检查
+            // --- 结束 ---
+
             // 重建characters和groups列表
             // 由于saveData时这两个字段被排除，需要从存储中重新构建
             db.characters = [];
@@ -21651,8 +21662,16 @@ function setupHomeScreenProfileEditor() {
     const avatarImg = header.querySelector('#home-profile-avatar');
     const nameEl = header.querySelector('.home-profile-name');
     const signatureEl = header.querySelector('.home-profile-signature');
-    
-    // 1. 渲染函数：从数据库读取数据并更新UI
+
+    // --- 修改：获取新的弹窗组件 ---
+    const editModal = document.getElementById('home-profile-edit-modal'); 
+    const editFromUrlBtn = document.getElementById('edit-profile-from-url-btn');
+    const editFromLocalBtn = document.getElementById('edit-profile-from-local-btn');
+    const cancelEditBtn = document.getElementById('cancel-edit-profile-btn');
+    const fileUploadInput = document.getElementById('home-profile-image-upload');
+    let currentProfileEditTarget = null; 
+
+    // 1. 渲染函数 (保持不变)
     function renderProfile() {
         const profile = db.homeProfile;
         heroEl.style.backgroundImage = `url('${profile.heroBg}')`;
@@ -21661,32 +21680,78 @@ function setupHomeScreenProfileEditor() {
         signatureEl.textContent = profile.signature;
     }
 
-    // 2. 保存函数
+    // 2. 保存函数 (保持不变)
     async function saveProfile() {
         await saveData();
         showToast('主页信息已更新');
     }
     
-    // 3. 图片编辑逻辑
-    heroEl.addEventListener('click', async () => {
-        const newBg = prompt('请输入新的背景图URL：', db.homeProfile.heroBg);
-        if (newBg && newBg.trim()) {
-            db.homeProfile.heroBg = newBg.trim();
-            renderProfile();
-            await saveProfile();
+    // --- 修改：图片编辑逻辑，改为打开居中弹窗 ---
+    const openEditMenu = (target) => {
+        currentProfileEditTarget = target;
+        editModal.classList.add('visible'); 
+    };
+
+    heroEl.addEventListener('click', () => {
+        openEditMenu('heroBg');
+    });
+
+    avatarImg.parentElement.addEventListener('click', () => {
+        openEditMenu('avatar');
+    });
+    
+    // --- 新增：处理新弹窗的按钮点击 ---
+    // a. "取消" 按钮
+    cancelEditBtn.addEventListener('click', () => {
+        editModal.classList.remove('visible'); 
+    });
+    
+    // 新增：点击弹窗灰色背景也可以关闭
+    editModal.addEventListener('click', (e) => {
+        if (e.target === editModal) {
+            editModal.classList.remove('visible');
         }
     });
 
-    avatarImg.parentElement.addEventListener('click', async () => {
-        const newAvatar = prompt('请输入新的头像URL：', db.homeProfile.avatar);
-        if (newAvatar && newAvatar.trim()) {
-            db.homeProfile.avatar = newAvatar.trim();
+    // b. "输入网络URL" 按钮
+    editFromUrlBtn.addEventListener('click', async () => {
+        const target = currentProfileEditTarget;
+        const promptMessage = target === 'heroBg' ? '请输入新的背景图URL：' : '请输入新的头像URL：';
+        const currentValue = db.homeProfile[target];
+        
+        const newUrl = prompt(promptMessage, currentValue);
+        if (newUrl && newUrl.trim()) {
+            db.homeProfile[target] = newUrl.trim();
             renderProfile();
             await saveProfile();
         }
+        editModal.classList.remove('visible'); 
     });
 
-    // 4. 文字内联编辑逻辑
+    // c. "从本地上传" 按钮
+    editFromLocalBtn.addEventListener('click', () => {
+        fileUploadInput.click();
+        editModal.classList.remove('visible'); 
+    });
+
+    // d. 处理文件上传 (保持不变)
+    fileUploadInput.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (file && currentProfileEditTarget) {
+            try {
+                const compressedUrl = await compressImage(file, { quality: 0.85, maxWidth: 1080, maxHeight: 1920 });
+                db.homeProfile[currentProfileEditTarget] = compressedUrl;
+                renderProfile();
+                await saveProfile();
+            } catch (error) {
+                showToast('图片处理失败，请重试');
+            }
+        }
+        e.target.value = null; 
+    });
+
+
+    // 4. 文字内联编辑逻辑 (保持不变)
     nameEl.addEventListener('click', async () => {
         const newName = prompt('请输入新的昵称：', db.homeProfile.name);
         if (newName && newName.trim()) {
@@ -21705,7 +21770,7 @@ function setupHomeScreenProfileEditor() {
         }
     });
 
-    // 首次加载时渲染一次
+    // 首次加载时渲染一次 (保持不变)
     renderProfile();
 }
 // ▼▼▼ 在这里粘贴下面的新代码 ▼▼▼
@@ -28851,7 +28916,17 @@ fileInput.addEventListener('change', async (e)=>{
     })();
 </script>
 
-  
+<div id="home-profile-edit-modal" class="modal-overlay">
+    <div class="modal-window">
+        <h3>更换图片</h3>
+        <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 25px;">
+            <button class="btn btn-primary" id="edit-profile-from-url-btn">输入网络URL</button>
+            <button class="btn btn-secondary" id="edit-profile-from-local-btn">从本地上传</button>
+            <button class="btn btn-neutral" id="cancel-edit-profile-btn" style="margin-top: 10px;">取消</button>
+        </div>
+    </div>
+</div>
+<input type="file" id="home-profile-image-upload" accept="image/*" style="display:none;">
 
 <!-- 在 </body> 之前添加 -->
 
