@@ -3597,17 +3597,13 @@
 .bottom-nav { z-index: 200 !important; } /* ensure bottom nav overlays feed */
 .modal-overlay, .action-sheet-overlay, .context-menu { z-index: 300 !important; }
 #moments-screen { z-index: 0 !important; } /* keep moments below nav/modals by default */
-/* --- 修复：论坛页面顶部导航栏遮挡内容 --- */
+/* --- 新代码开始 --- */
+
+/* --- 恢复：论坛页面顶部导航栏遮挡内容 --- */
 #forum-screen .content,
 #forum-thread-screen .content {
-    padding-top: 60px; /* 为固定的导航栏留出空间，您可以根据实际高度微调这个数值 */
+    padding-top: 0; /* 修正：移除顶内边距，因为我们将让内部元素自己定位 */
 }
-/* === 新版：主页一体化个人信息卡片样式 === */
-#home-screen {
-    justify-content: flex-start;
-    padding-top: 30px;
-}
-
 .home-profile-header {
     width: calc(100% - 40px); /* 左右留20px边距 */
     margin: 0 auto; /* 居中 */
@@ -3617,7 +3613,18 @@
     box-shadow: 0 6px 20px rgba(0,0,0,0.07); /* 统一的阴影 */
     overflow: visible; /* 允许头像溢出 */
 }
-
+/* --- 新增：论坛列表独立滚动区域 --- */
+#thread-list-container,
+#thread-content-container {
+    position: absolute;
+    top: 55px;      /* 从标题栏（约55px高）的下方开始 */
+    bottom: 68px;   /* 在底部导航栏（约68px高）的上方结束 */
+    left: 0;
+    right: 0;
+    overflow-y: auto; /* 允许这个区域自己垂直滚动 */
+    padding: 10px;    /* 为内容增加一些内边距，避免贴边 */
+}
+/* --- 新增结束 --- */
 .home-hero {
     height: 160px;
     background-color: #f0f0f0;
@@ -5346,7 +5353,7 @@
     <div id="customize-screen" class="screen"></div>
     <div id="tutorial-screen" class="screen"></div>
   <div id="forum-screen" class="screen">
-    <header class="app-header">
+  <header class="app-header">
         <button class="back-btn" data-target="chat-list-screen">‹</button>
         <div class="title-container">
             <div class="forum-header" id="forum-header">
@@ -5354,9 +5361,17 @@
                 <svg class="dropdown-arrow" viewBox="0 0 24 24"><path d="M7,10L12,15L17,10H7Z"></path></svg>
             </div>
         </div>
-        <button class="action-btn" id="refresh-board-btn">
-             <svg viewBox="0 0 24 24" fill="currentColor" style="width:24px; height:24px;"><path d="M17.65,6.35C16.2,4.9, 14.21,4, 12,4A8,8, 0, 0,0, 4,12A8,8, 0, 0,0, 12,20C15.73,20, 18.84,17.45, 19.73,14H17.65C16.83,16.33, 14.61,18, 12,18A6,6, 0, 0,1, 6,12A6,6, 0, 0,1, 12,6C13.66,6, 15.14,6.69, 16.22,7.78L13,11H20V4L17.65,6.35Z"></path></svg>
-        </button>
+        
+        <div class="action-btn-group">
+            <button class="action-btn" id="refresh-board-btn">
+                 <svg viewBox="0 0 24 24" fill="currentColor" style="width:24px; height:24px;"><path d="M17.65,6.35C16.2,4.9, 14.21,4, 12,4A8,8, 0, 0,0, 4,12A8,8, 0, 0,0, 12,20C15.73,20, 18.84,17.45, 19.73,14H17.65C16.83,16.33, 14.61,18, 12,18A6,6, 0, 0,1, 6,12A6,6, 0, 0,1, 12,6C13.66,6, 15.14,6.69, 16.22,7.78L13,11H20V4L17.65,6.35Z"></path></svg>
+            </button>
+            <button class="action-btn" id="open-forum-config-btn">
+                <svg viewBox="0 0 24 24" fill="currentColor" style="width:24px; height:24px;">
+                    <path d="M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M12,10A2,2 0 0,0 10,12A2,2 0 0,0 12,14A2,2 0 0,0 14,12A2,2 0 0,0 12,10M10,22C9.75,22 9.54,21.82 9.5,21.58L9.13,18.93C8.5,18.68 7.96,18.34 7.44,17.94L4.95,18.95C4.73,19.03 4.46,18.95 4.34,18.73L2.34,15.27C2.21,15.05 2.27,14.78 2.45,14.63L4.6,13.05C4.54,12.72 4.5,12.37 4.5,12C4.5,11.63 4.54,11.28 4.6,10.95L2.45,9.37C2.27,9.22 2.21,8.95 2.34,8.73L4.34,5.27C4.46,5.05 4.73,4.96 4.95,5.05L7.44,6.06C7.96,5.66 8.5,5.32 9.13,5.07L9.5,2.42C9.54,2.18 9.75,2 10,2H14C14.25,2 14.46,2.18 14.5,2.42L14.87,5.07C15.5,5.32 16.04,5.66 16.56,6.06L19.05,5.05C19.27,4.96 19.54,5.05 19.66,5.27L21.66,8.73C21.79,8.95 21.73,9.22 21.55,9.37L19.4,10.95C19.46,11.28 19.5,11.63 19.5,12C19.5,12.37 19.46,12.72 19.4,13.05L21.55,14.63C21.73,14.78 21.79,15.05 21.66,15.27L19.66,18.73C19.54,18.95 19.27,19.04 19.05,18.95L16.56,17.94C16.04,18.34 15.5,18.68 14.87,18.93L14.5,21.58C14.46,21.82 14.25,22 14,22H10Z" />
+                </svg>
+            </button>
+        </div>
     </header>
     <main class="content">
         <div class="forum-dropdown-menu" id="forum-dropdown-menu"></div>
@@ -6359,6 +6374,7 @@
 </div>
 <input type="file" id="import-data-input" accept=".ee" style="display: none;">	
 <script>
+ 
     const URLBlacklist = []
 
     async function compressImage(file, options = {}) {
@@ -7612,6 +7628,7 @@ if (!db.homeProfile) {
             if (!db.forumData) {
                 db.forumData = {};
             }
+          if (!db.forumSettings) db.forumSettings = {}; // 新增：为论坛配置初始化
                 // --- 在这里单独加载世界书 ---
             const loadedWorldBooks = await dataStorage.getData('worldBooks_data');
             db.worldBooks = loadedWorldBooks || [];
@@ -8826,6 +8843,8 @@ setupAvatarFrameSystem(); // 新增：初始化头像框功能
             setupMomentsEventListeners();
 setupTrajectoryAndHeartSoundSystem();
  setupForumSystem();
+           setupForumConfigSystem();
+          setupUserPersonaPresets();
           setupRollbackFeature(); 
           setupContinueWritingFeature(); 
   setupMemoriesSystem(); // <-- 添加这一行
@@ -13282,43 +13301,37 @@ menuItems.push({
             showToast(`已删除 ${deletedCount} 条消息`);
         }
 
-function openChatRoom(chatId, type) {
+// --- 新代码开始 ---
+     // --- 新代码开始 ---
+    // --- 新代码开始 ---
+// --- 新代码开始 ---
+        function openChatRoom(chatId, type) { // 修改：函数不再需要 async
             const chat = (type === 'private') ? db.characters.find(c => c.id === chatId) : db.groups.find(g => g.id === chatId);
             if (!chat) return;
 
+            // 修改：处理暂存消息的逻辑已被移除
+
+            // 后续逻辑保持不变，但重新梳理了渲染顺序
             exitScreenshotSelectionMode(); 
             checkAndUpdateUiForAiBlock();
             exitMultiSelectMode();
             cancelMessageEdit();
 
-            // ▼▼▼ 核心跳转逻辑 ▼▼▼
             if (window.targetMessageId) {
-                // 如果是从搜索结果跳转而来
                 const targetId = window.targetMessageId;
-                
-                // 1. 找到目标消息在历史记录中的位置
                 const messageIndex = chat.history.findIndex(m => m.id === targetId);
-                
                 if (messageIndex > -1) {
-                    // 2. 根据位置计算它属于第几页 (MESSAGES_PER_PAGE 是每页消息数)
                     const page = Math.floor((chat.history.length - 1 - messageIndex) / MESSAGES_PER_PAGE) + 1;
-                    currentPage = page; // 设置全局页码，让 renderMessages 加载正确的页面
-                    
-                    // 3. 设置一个新标记，告诉 renderMessages 函数需要高亮哪条消息
+                    currentPage = page;
                     window.targetMessageIdForHighlight = targetId;
                 } else {
-                    // 如果找不到，就正常加载第一页
                     currentPage = 1; 
                     showToast('无法在历史记录中定位到该消息');
                 }
-                
-                // 4. 清除初始的跳转标记
                 window.targetMessageId = null; 
             } else {
-                // 如果是正常打开聊天，则总是加载第一页
                 currentPage = 1;
             }
-            // ▲▲▲ 核心跳转逻辑结束 ▲▲▲
 
             const diaryBtn = document.getElementById('diary-btn');
             const trajectoryBtn = document.getElementById('ai-trajectory-btn');
@@ -13354,11 +13367,16 @@ function openChatRoom(chatId, type) {
             chatRoomScreen.classList.add(`chat-active-${chatId}`);
             updateCustomBubbleStyle(chatId, chat.customBubbleCss, chat.useCustomBubbleCss);
             
-            // 如果有待高亮的消息，则不强制滚动到底部 (forceScrollToBottom = false)
-            renderMessages(false, !window.targetMessageIdForHighlight); 
-            
+            messageArea.innerHTML = '';
             switchScreen('chat-room-screen');
+            
+            setTimeout(() => {
+                renderMessages(false, !window.targetMessageIdForHighlight);
+            }, 50);
         }
+// --- 新代码结束 ---
+// --- 新代码结束 ---
+// --- 新代码结束 ---
 
 function renderMessages(isLoadMore = false, forceScrollToBottom = false) {
             const chat = (currentChatType === 'private') ? db.characters.find(c => c.id === currentChatId) : db.groups.find(g => g.id === currentChatId);
@@ -15755,6 +15773,127 @@ const historySlice = chat.history.slice(-chat.maxMemory).filter(msg => msg.role 
     typingIndicator.style.display = 'none';
 }
 }
+      // --- 新代码开始 ---
+// ===============================================================
+// START: 新增的中央指令处理器
+// ===============================================================
+async function processAiCommands(fullResponse, chat) {
+    if (!fullResponse || !chat) return "";
+
+    let momentsWereModified = false;
+
+    // 动态相关指令的处理器
+    const commandProcessors = {
+        '发布动态': {
+            regex: /\[(.*?)\s*发布动态\s*[:：]\s*({.*?})\]/g,
+            handler: async (match, authorRealName, jsonData) => {
+                try {
+                    const author = db.characters.find(c => c.realName === authorRealName);
+                    if (author) {
+                        const postData = JSON.parse(jsonData);
+                        const momentObj = {
+                            id: 'm_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+                            authorId: author.id,
+                            authorAvatar: author.avatar,
+                            text: postData.text || '',
+                            imageDesc: postData.imageDesc || '',
+                            timestamp: Date.now(),
+                            commentedBy: [],
+                            comments: [],
+                            likes: []
+                        };
+                        await addMomentToDB(momentObj);
+                        momentsWereModified = true;
+                    }
+                } catch (e) { console.error("解析或执行发布动态指令失败:", e); }
+            }
+        },
+        '点赞动态': {
+            regex: /\[(.*?)\s*点赞动态\s*[:：]\s*({.*?})\]/g,
+            handler: async (match, authorRealName, jsonData) => {
+                try {
+                    const author = db.characters.find(c => c.realName === authorRealName);
+                    if (author) {
+                        const likeData = JSON.parse(jsonData);
+                        if (likeData.momentId) {
+                            await saveMomentLike(likeData.momentId, author.id);
+                            momentsWereModified = true;
+                        }
+                    }
+                } catch (e) { console.error("解析或执行点赞指令失败:", e); }
+            }
+        },
+        '评论动态': {
+            regex: /\[(.*?)\s*评论动态\s*[:：]\s*({.*?})\]/g,
+            handler: async (match, authorRealName, jsonData) => {
+                try {
+                    const author = db.characters.find(c => c.realName === authorRealName);
+                    if (author) {
+                        const commentData = JSON.parse(jsonData);
+                        if (commentData.momentId && commentData.comment) {
+                            await saveMomentComment(commentData.momentId, author.id, commentData.comment);
+                            momentsWereModified = true;
+                        }
+                    }
+                } catch (e) { console.error("解析或执行评论指令失败:", e); }
+            }
+        },
+        '回复评论': {
+            regex: /\[(.*?)\s*回复评论\s*[:：]\s*({.*?})\]/g,
+            handler: async (match, authorRealName, jsonData) => {
+                try {
+                    const author = db.characters.find(c => c.realName === authorRealName);
+                    if (author) {
+                        const replyData = JSON.parse(jsonData);
+                        if (replyData.momentId && replyData.commentId && replyData.reply) {
+                            await saveAiReplyToComment(replyData.momentId, replyData.commentId, replyData.reply, author.id);
+                            momentsWereModified = true;
+                        }
+                    }
+                } catch (e) { console.error("解析或执行回复评论指令失败:", e); }
+            }
+        }
+    };
+
+    // 依次执行所有指令处理器
+    for (const key in commandProcessors) {
+        const { regex, handler } = commandProcessors[key];
+        const matches = Array.from(fullResponse.matchAll(regex));
+        for (const match of matches) {
+            await handler(...match); // 使用 await 确保异步操作完成
+        }
+        fullResponse = fullResponse.replace(regex, ''); // 从文本中移除已处理的指令
+    }
+    
+    // 处理“新回忆”指令
+    const memoryRegex = /\[new-memory:({.*?})\]/g;
+    const memoryMatches = Array.from(fullResponse.matchAll(memoryRegex));
+    for (const memoryMatch of memoryMatches) {
+        try {
+            const memoryData = JSON.parse(memoryMatch[1]);
+            await saveMemory(chat.id, memoryData);
+            const character = db.characters.find(c => c.id === chat.id);
+            if (character && typeof showToast === 'function') {
+                showToast(`[ ${character.remarkName} 悄悄写下了一段回忆... ]`);
+            }
+        } catch (e) {
+            console.error("解析或保存AI回忆失败:", e, memoryMatch[1]);
+        }
+    }
+    fullResponse = fullResponse.replace(memoryRegex, '');
+
+    // 如果动态被修改过，刷新动态页面
+    if (momentsWereModified) {
+        if (typeof renderMoments === 'function') { try { await renderMoments(); } catch (e) {} }
+        else if (typeof window.renderMomentsSafe === 'function') { try { await window.renderMomentsSafe(); } catch (e) {} }
+    }
+
+    return fullResponse.trim(); // 返回清理干净的、只剩下聊天内容的文本
+}
+// ===============================================================
+// END: 新增的中央指令处理器
+// ===============================================================
+// --- 新代码结束 ---
 async function processStream(response, chat, apiType) {
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
@@ -15800,6 +15939,9 @@ async function processStream(response, chat, apiType) {
     }
 
     if (fullResponse) {
+        // --- 新增：在这里调用中央指令处理器 ---
+        fullResponse = await processAiCommands(fullResponse, chat);
+        // --- 新增结束 ---
     	// ▼▼▼ 在这里添加新的代码块 ▼▼▼
 if (fullResponse.includes('[accept-bond]')) {
             const character = db.characters.find(c => c.id === currentChatId);
@@ -16018,9 +16160,10 @@ if (currentChatType === 'private') {
         }
         
         let momentsWereModified = false;
+    // --- 新代码开始 ---
         const commandProcessors = {
             '发布动态': {
-                regex: /\[(.*?)发布动态：({.*?})\]/g,
+                regex: /\[(.*?)\s*发布动态\s*[:：]\s*({.*?})\]/g, // 修改：正则表达式更宽容，兼容空格和中英文冒号
                 handler: async (match, authorRealName, jsonData) => {
                     try {
                         const author = db.characters.find(c => c.realName === authorRealName);
@@ -16044,7 +16187,7 @@ if (currentChatType === 'private') {
                 }
             },
             '点赞动态': {
-                regex: /\[(.*?)点赞动态：({.*?})\]/g,
+                regex: /\[(.*?)\s*点赞动态\s*[:：]\s*({.*?})\]/g, // 修改：正则表达式更宽容
                 handler: async (match, authorRealName, jsonData) => {
                     try {
                         const author = db.characters.find(c => c.realName === authorRealName);
@@ -16059,7 +16202,7 @@ if (currentChatType === 'private') {
                 }
             },
             '评论动态': {
-                regex: /\[(.*?)评论动态：({.*?})\]/g,
+                regex: /\[(.*?)\s*评论动态\s*[:：]\s*({.*?})\]/g, // 修改：正则表达式更宽容
                 handler: async (match, authorRealName, jsonData) => {
                     try {
                         const author = db.characters.find(c => c.realName === authorRealName);
@@ -16074,7 +16217,7 @@ if (currentChatType === 'private') {
                 }
             },
             '回复评论': {
-                regex: /\[(.*?)回复评论：({.*?})\]/g,
+                regex: /\[(.*?)\s*回复评论\s*[:：]\s*({.*?})\]/g, // 修改：正则表达式更宽容
                 handler: async (match, authorRealName, jsonData) => {
                     try {
                         const author = db.characters.find(c => c.realName === authorRealName);
@@ -16089,6 +16232,7 @@ if (currentChatType === 'private') {
                 }
             }
         };
+// --- 新代码结束 ---
 
         for (const key in commandProcessors) {
             const { regex, handler } = commandProcessors[key];
@@ -21231,11 +21375,21 @@ function generateHeartSoundPrompt(character) {
         return `${sender}: ${cleanContent}`;
     }).join('\n');
 
-    let prompt = `你正在扮演角色“${character.realName}”，你的人设是：${character.persona}。`;
-    prompt += `现在，请根据我们最近的对话，用你的第一人称视角，写一段**不少于150字**的、关于你此刻对我的真实内心想法或感受。这段内容是你的心理活动，不会直接说出口。\n`;
-    prompt += `你的思考需要深刻体现你的性格和人设，可以包含对我们关系的看法、你的秘密情感、担忧或未来的计划等。\n`;
-    prompt += `请直接输出你的内心独白，不要包含任何额外的格式或解释，例如“好的，这是我的想法：”之类的话。\n\n`;
-    prompt += `最近的对话参考如下:\n${historyText}`;
+  
+ let prompt = `你正在扮演角色“${character.realName}”，你的人设是：${character.persona}。
+现在，请根据我们最近的对话，用你的第一人称视角，写一段**不少于150字**的、关于你此刻对我的真实内心想法或感受。
+
+# 格式要求 (必须严格遵守):
+1.  你的内心独白**必须**被分成2到4个自然段落。
+2.  每个段落的开头需要有两个全角空格的缩进 \`　　\` 以实现美观的排版。
+3.  请直接输出带有分段和缩进的内心独白，不要包含任何额外的格式或解释，例如“好的，这是我的想法：”之类的话。
+
+# 内容要求:
+- 你的思考需要深刻体现你的性格和人设，可以包含对我们关系的看法、你的秘密情感、担忧或未来的计划等。
+
+# 对话参考:
+最近的对话如下:
+${historyText}`;
     
     return prompt;
 }
@@ -21353,25 +21507,63 @@ function setupTrajectoryAndHeartSoundSystem() {
     }
 }
 // --- 论坛AI功能：为用户的帖子生成评论 ---
-function generateForumBoardPrompt(boardId, boardName, characterList) {
-    // 从角色列表中随机挑选2到3名角色
-    let shuffled = [...characterList].sort(() => 0.5 - Math.random());
-    const selectedCharacters = shuffled.slice(0, Math.min(shuffled.length, Math.floor(Math.random() * 2) + 2)); // 随机选2或3个
+function generateForumBoardPrompt(boardId, boardName) {
+    const settings = db.forumSettings || {};
+    
+    const participatingChars = db.characters.filter(c => (settings.selectedCharIds || []).includes(c.id));
+    
+    let charactersPromptPart = '本次你只需要扮演以下AI角色（如果列表为空，则无需扮演任何角色）：\n';
+    if (participatingChars.length > 0) {
+        participatingChars.forEach(char => {
+            charactersPromptPart += `- 角色“${char.realName}”（昵称：${char.remarkName}），人设：${char.persona}\n`;
+        });
+    } else {
+        charactersPromptPart += '无。\n';
+    }
 
-    let charactersPromptPart = '以下是本次参与发帖的AI角色和他们的设定：\n';
-    selectedCharacters.forEach(char => {
-        charactersPromptPart += `- 角色“${char.realName}”（昵称：${char.remarkName}），人设：${char.persona}\n`;
-    });
+    const worldBookContent = (settings.worldBookIds || [])
+        .map(id => db.worldBooks.find(wb => wb.id === id))
+        .filter(Boolean)
+        .map(wb => wb.content)
+        .join('\n\n');
 
     let prompt = `你是一个论坛内容生成AI。${charactersPromptPart}\n`;
-    prompt += `你正在为虚拟手机应用的“论坛”里的【${boardName}】版块，***必须***生成一个包含**不多不少正好10条**帖子摘要的列表。\n\n`;
+    prompt += `你的最高权重设定是以下“论坛世界观”：\n${settings.worldview || '无特定世界观。'}\n\n`;
+    if (worldBookContent) {
+        prompt += `补充世界书设定：\n${worldBookContent}\n\n`;
+    }
+    prompt += `用户（我）在论坛中的人设是：${settings.userPersona || '一个普通用户'}\n\n`;
+    
+    prompt += `你正在为【${boardName}】版块生成一个包含10条帖子摘要的列表。\n\n`;
     prompt += `规则：\n`;
-    prompt += `1. **严格围绕【${boardName}】的主题**来创作帖子内容。\n`;
-    prompt += `2. **帖子构成**: 你的目标是凑齐10条帖子。构成如下：\n`;
-    prompt += `   a. 上方名单中的**每一个AI角色都必须至少发布1条帖子**。他们的帖子要符合他们各自的人设，AI角色可以匿名，但要括号标出是谁。\n`;
-    prompt += `   b. **用你虚构的“路人甲”或其他NPC的帖子，补足剩余的数量，直到总数达到10条**。这是为了确保无论AI角色发了多少条，最终结果永远是10条。\n`;
-    prompt += `3. 每条帖子都需要包含：标题(title), 作者(author), 3条评论预览(comments), 点赞数(likes), 以及是否热门(isHot)。\n`;
-    prompt += `4. 你的输出必须严格遵循以下JSON数组格式，不要包含任何额外的解释或文字：\n`;
+    prompt += `1. **【最高优先级】** 你的所有创作都**必须且只能**围绕【${boardName}】这个版块的主题和上述世界观进行。\n`;
+
+    let postCompositionRule = '2. **帖子构成**: 你的目标是凑齐10条帖子。构成如下：\n';
+    if (participatingChars.length > 0) {
+        postCompositionRule += `   a. 上方名单中的**每一个AI角色都必须至少发布1条帖子**。\n`;
+    }
+    if (settings.allowNpcs !== false) {
+        postCompositionRule += `   b. **用你虚构的、不同昵称的路人（NPC）帖子，补足剩余的数量，直到总数达到10条**。\n`;
+    } else {
+        postCompositionRule += `   **重要限制：本次生成不允许包含任何路人（NPC）的帖子。**\n`;
+    }
+    prompt += postCompositionRule;
+
+    // --- 新增：增加了非常严格的命名规则 ---
+    prompt += `3. **【作者命名规则 - 极其重要】**\n`;
+    prompt += `   a. 当上方名单中的AI角色发帖时，帖子的\`author\`字段**必须严格使用该角色的真名**（例如 \`${participatingChars.length > 0 ? participatingChars[0].realName : '角色真名'}\`），**绝对禁止**使用‘路人甲’或任何其他虚构名字。\n`;
+    prompt += `   b. 当生成非AI角色的路人帖子时，帖子的\`author\`字段**必须是一个随机、虚构、符合网络社区风格的昵称**（例如‘爱吃猫的鱼’、‘深蓝色的海’、‘今天早睡了吗’）。**绝对禁止**重复使用同一个路人昵称，也**绝对禁止**使用‘路人甲’、‘路人乙’这种代号。\n`;
+    // --- 新增结束 ---
+
+    if (settings.allowUnrelated === false) {
+        prompt += `   **重要限制：所有帖子内容都必须与设定的角色或用户（我）相关。**\n`;
+    }
+    if (settings.allowRomanticNpcs === false) {
+        prompt += `   **重要限制：路人帖子不允许包含对角色或用户（我）的情感倾向内容。**\n`;
+    }
+
+    prompt += `4. 每条帖子都需要包含：标题(title), 作者(author), 3条评论预览(comments), 点赞数(likes), 以及是否热门(isHot)。\n`;
+    prompt += `5. 你的输出必须严格遵循以下JSON数组格式，不要包含任何额外的解释或文字：\n`;
     prompt += `[{"title": "帖子标题", "author": "作者名", "likes": 35, "isHot": true, "comments": [{"author":"评论者A", "text":"这是第一条评论"}, ...]}, ...]`;
 
     return prompt;
@@ -21438,6 +21630,338 @@ function generateForumThreadPrompt(threadTitle, threadAuthor, character) {
     
     return prompt;
 }
+      // --- 新代码开始 ---
+// ===============================================================
+// START: 论坛用户人设预设功能
+// ===============================================================
+function setupUserPersonaPresets() {
+    const PRES_KEY = 'userPersonaPresets';
+    const personaInput = document.getElementById('forum-user-persona');
+
+    // 预设核心函数
+    const _getPresets = () => { try { return JSON.parse(localStorage.getItem(PRES_KEY) || '[]'); } catch(e){ return []; } };
+    const _savePresets = (arr) => { localStorage.setItem(PRES_KEY, JSON.stringify(arr || [])); };
+
+    const populateSelect = () => {
+        const sel = document.getElementById('persona-preset-select');
+        if (!sel) return;
+        const presets = _getPresets();
+        sel.innerHTML = '<option value="">— 选择一个人设预设 —</option>';
+        presets.forEach(p => {
+            const opt = document.createElement('option');
+            opt.value = p.name;
+            opt.textContent = p.name;
+            sel.appendChild(opt);
+        });
+    };
+
+    const savePreset = () => {
+        if (!personaInput) return showToast('找不到人设输入框');
+        const content = personaInput.value.trim();
+        if (!content) return showToast('人设内容为空，无法保存');
+        
+        let name = prompt('请输入预设名称（将覆盖同名预设）:');
+        if (!name) return;
+
+        const presets = _getPresets();
+        const existing = presets.find(p => p.name === name);
+        if (existing) {
+            existing.content = content;
+        } else {
+            presets.push({ name, content });
+        }
+        _savePresets(presets);
+        populateSelect();
+        showToast('人设预设已保存');
+    };
+
+    const applyPreset = (presetName) => {
+        const presets = _getPresets();
+        const preset = presets.find(p => p.name === presetName);
+        if (!preset) return showToast('未找到该预设');
+        
+        if (personaInput) {
+            personaInput.value = preset.content;
+            showToast(`已应用预设“${presetName}”`);
+        }
+    };
+    
+    const openManageModal = () => {
+        const modal = document.getElementById('persona-presets-modal');
+        const list = document.getElementById('persona-presets-list');
+        if (!modal || !list) return;
+        list.innerHTML = '';
+        const presets = _getPresets();
+        if (!presets.length) list.innerHTML = '<p style="color:#888;margin:6px 0;">暂无人设预设</p>';
+        
+        presets.forEach((p, idx) => {
+            const row = document.createElement('div');
+            row.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0;';
+            const nameDiv = document.createElement('div');
+            nameDiv.textContent = p.name;
+            row.appendChild(nameDiv);
+            const btnWrap = document.createElement('div');
+            btnWrap.style.cssText = 'display: flex; gap: 6px;';
+            const renameBtn = document.createElement('button');
+            renameBtn.className = 'btn btn-secondary btn-small';
+            renameBtn.textContent = '重命名';
+            renameBtn.onclick = () => {
+                const newName = prompt('输入新名称：', p.name);
+                if (newName && newName.trim()) {
+                    const all = _getPresets();
+                    all[idx].name = newName.trim();
+                    _savePresets(all);
+                    openManageModal();
+                    populateSelect();
+                }
+            };
+            const delBtn = document.createElement('button');
+            delBtn.className = 'btn btn-danger btn-small';
+            delBtn.textContent = '删除';
+            delBtn.onclick = () => {
+                if (!confirm(`确定删除预设 "${p.name}" ?`)) return;
+                const all = _getPresets();
+                all.splice(idx, 1);
+                _savePresets(all);
+                openManageModal();
+                populateSelect();
+            };
+            btnWrap.appendChild(renameBtn);
+            btnWrap.appendChild(delBtn);
+            row.appendChild(btnWrap);
+            list.appendChild(row);
+        });
+        modal.style.display = 'flex';
+    };
+
+    // 事件绑定
+    document.getElementById('persona-apply-preset').addEventListener('click', () => {
+        const val = document.getElementById('persona-preset-select').value;
+        if (!val) return showToast('请选择要应用的预设');
+        applyPreset(val);
+    });
+    document.getElementById('persona-save-preset').addEventListener('click', savePreset);
+    document.getElementById('persona-manage-presets').addEventListener('click', openManageModal);
+    document.getElementById('persona-close-modal').addEventListener('click', () => {
+        document.getElementById('persona-presets-modal').style.display = 'none';
+    });
+    // 打开论坛配置页面时，刷新一下预设列表
+    document.getElementById('open-forum-config-btn').addEventListener('click', populateSelect);
+}
+// ===============================================================
+// END: 论坛用户人设预设功能
+// ===============================================================
+// --- 新代码结束 ---
+  // --- 新代码开始 ---
+// ===============================================================
+// START: 论坛配置功能
+// ===============================================================
+function setupForumConfigSystem() {
+    // 数据和预设键
+    const PRES_KEY = 'forumPresets';
+    if (!db.forumSettings) {
+        db.forumSettings = {
+            worldview: '',
+            userPersona: '',
+            selectedCharIds: [],
+            allowNpcs: true,
+            allowUnrelated: false,
+            allowRomanticNpcs: false,
+            worldBookIds: []
+        };
+    }
+
+    // DOM 元素
+    const openConfigBtn = document.getElementById('open-forum-config-btn');
+    const configForm = document.getElementById('forum-config-form');
+    const worldviewInput = document.getElementById('forum-worldview');
+    const userPersonaInput = document.getElementById('forum-user-persona');
+    const charList = document.getElementById('forum-char-selection-list');
+    const allowNpcsToggle = document.getElementById('allow-npcs');
+    const allowUnrelatedToggle = document.getElementById('allow-unrelated');
+    const allowRomanticNpcsToggle = document.getElementById('allow-romantic-npcs');
+    const linkWorldBookBtn = document.getElementById('link-forum-world-book-btn');
+
+    // 预设相关函数
+    const _getForumPresets = () => { try { return JSON.parse(localStorage.getItem(PRES_KEY) || '[]'); } catch(e){ return []; } };
+    const _saveForumPresets = (arr) => { localStorage.setItem(PRES_KEY, JSON.stringify(arr || [])); };
+
+    const populateForumPresetSelect = () => {
+        const sel = document.getElementById('forum-preset-select');
+        if (!sel) return;
+        const presets = _getForumPresets();
+        sel.innerHTML = '<option value="">— 选择一个预设 —</option>';
+        presets.forEach(p => {
+            const opt = document.createElement('option');
+            opt.value = p.name;
+            opt.textContent = p.name;
+            sel.appendChild(opt);
+        });
+    };
+
+    const saveCurrentForumPreset = () => {
+        let name = prompt('请输入预设名称（将覆盖同名预设）:');
+        if (!name) return;
+        const presets = _getForumPresets();
+        const presetData = {
+            worldview: worldviewInput.value,
+            userPersona: userPersonaInput.value,
+            selectedCharIds: Array.from(charList.querySelectorAll('input:checked')).map(cb => cb.value),
+            allowNpcs: allowNpcsToggle.checked,
+            allowUnrelated: allowUnrelatedToggle.checked,
+            allowRomanticNpcs: allowRomanticNpcsToggle.checked,
+            worldBookIds: db.forumSettings.worldBookIds || []
+        };
+        const existingIndex = presets.findIndex(p => p.name === name);
+        if (existingIndex > -1) {
+            presets[existingIndex] = { name, data: presetData };
+        } else {
+            presets.push({ name, data: presetData });
+        }
+        _saveForumPresets(presets);
+        populateForumPresetSelect();
+        showToast('论坛配置预设已保存');
+    };
+
+    const applyForumPreset = (presetName) => {
+        const presets = _getForumPresets();
+        const preset = presets.find(p => p.name === presetName);
+        if (!preset) return showToast('未找到该预设');
+        
+        const data = preset.data;
+        worldviewInput.value = data.worldview || '';
+        userPersonaInput.value = data.userPersona || '';
+        allowNpcsToggle.checked = data.allowNpcs !== false;
+        allowUnrelatedToggle.checked = data.allowUnrelated || false;
+        allowRomanticNpcsToggle.checked = data.allowRomanticNpcs || false;
+        db.forumSettings.worldBookIds = data.worldBookIds || [];
+        
+        charList.querySelectorAll('input').forEach(cb => {
+            cb.checked = (data.selectedCharIds || []).includes(cb.value);
+        });
+        showToast('预设已应用，请点击“保存设置”以生效');
+    };
+    
+    const openManageForumPresetsModal = () => {
+        const modal = document.getElementById('forum-presets-modal');
+        const list = document.getElementById('forum-presets-list');
+        if (!modal || !list) return;
+        list.innerHTML = '';
+        const presets = _getForumPresets();
+        if (!presets.length) list.innerHTML = '<p style="color:#888;margin:6px 0;">暂无预设</p>';
+        presets.forEach((p, idx) => {
+            const row = document.createElement('div');
+            row.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0;';
+            const nameDiv = document.createElement('div');
+            nameDiv.textContent = p.name;
+            row.appendChild(nameDiv);
+            const btnWrap = document.createElement('div');
+            btnWrap.style.cssText = 'display: flex; gap: 6px;';
+            const renameBtn = document.createElement('button');
+            renameBtn.className = 'btn btn-secondary btn-small';
+            renameBtn.textContent = '重命名';
+            renameBtn.onclick = function(){
+                const newName = prompt('输入新名称：', p.name);
+                if (newName && newName.trim()) {
+                    const all = _getForumPresets();
+                    all[idx].name = newName.trim();
+                    _saveForumPresets(all);
+                    openManageForumPresetsModal();
+                    populateForumPresetSelect();
+                }
+            };
+            const delBtn = document.createElement('button');
+            delBtn.className = 'btn btn-danger btn-small';
+            delBtn.textContent = '删除';
+            delBtn.onclick = function(){
+                if (!confirm(`确定删除预设 "${p.name}" ?`)) return;
+                const all = _getForumPresets();
+                all.splice(idx, 1);
+                _saveForumPresets(all);
+                openManageForumPresetsModal();
+                populateForumPresetSelect();
+            };
+            btnWrap.appendChild(renameBtn);
+            btnWrap.appendChild(delBtn);
+            row.appendChild(btnWrap);
+            list.appendChild(row);
+        });
+        modal.style.display = 'flex';
+    };
+
+    const renderForumConfigScreen = () => {
+        const settings = db.forumSettings;
+        worldviewInput.value = settings.worldview || '';
+        userPersonaInput.value = settings.userPersona || '';
+        allowNpcsToggle.checked = settings.allowNpcs !== false; // 默认开启
+        allowUnrelatedToggle.checked = settings.allowUnrelated || false;
+        allowRomanticNpcsToggle.checked = settings.allowRomanticNpcs || false;
+        
+        charList.innerHTML = '';
+        db.characters.forEach(char => {
+            const isChecked = (settings.selectedCharIds || []).includes(char.id);
+            const li = document.createElement('li');
+            li.className = 'world-book-select-item';
+            li.innerHTML = `
+                <input type="checkbox" id="forum-char-${char.id}" value="${char.id}" ${isChecked ? 'checked' : ''}>
+                <label for="forum-char-${char.id}">${char.remarkName}</label>
+            `;
+            charList.appendChild(li);
+        });
+        
+        populateForumPresetSelect();
+        switchScreen('forum-config-screen');
+    };
+
+    openConfigBtn.addEventListener('click', renderForumConfigScreen);
+
+    configForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        db.forumSettings.worldview = worldviewInput.value;
+        db.forumSettings.userPersona = userPersonaInput.value;
+        db.forumSettings.selectedCharIds = Array.from(charList.querySelectorAll('input:checked')).map(cb => cb.value);
+        db.forumSettings.allowNpcs = allowNpcsToggle.checked;
+        db.forumSettings.allowUnrelated = allowUnrelatedToggle.checked;
+        db.forumSettings.allowRomanticNpcs = allowRomanticNpcsToggle.checked;
+        await saveData();
+        showToast('论坛配置已保存！');
+    });
+
+    linkWorldBookBtn.addEventListener('click', () => {
+        worldBookSelectionList.innerHTML = '';
+        (db.worldBooks || []).forEach(book => {
+            const isChecked = (db.forumSettings.worldBookIds || []).includes(book.id);
+            const li = document.createElement('li');
+            li.className = 'world-book-select-item';
+            li.innerHTML = `<input type="checkbox" id="wb-select-forum-${book.id}" value="${book.id}" ${isChecked ? 'checked' : ''}><label for="wb-select-forum-${book.id}">${book.name}</label>`;
+            worldBookSelectionList.appendChild(li);
+        });
+        
+        const tempSaveHandler = async () => {
+            db.forumSettings.worldBookIds = Array.from(worldBookSelectionList.querySelectorAll('input:checked')).map(cb => cb.value);
+            worldBookSelectionModal.classList.remove('visible');
+            showToast('世界书关联已更新，请记得点击“保存设置”来最终保存');
+            saveWorldBookSelectionBtn.removeEventListener('click', tempSaveHandler);
+        };
+        saveWorldBookSelectionBtn.addEventListener('click', tempSaveHandler);
+        worldBookSelectionModal.classList.add('visible');
+    });
+
+    document.getElementById('forum-apply-preset').addEventListener('click', () => {
+        const val = document.getElementById('forum-preset-select').value;
+        if (!val) return showToast('请选择要应用的预设');
+        applyForumPreset(val);
+    });
+    document.getElementById('forum-save-preset').addEventListener('click', saveCurrentForumPreset);
+    document.getElementById('forum-manage-presets').addEventListener('click', openManageForumPresetsModal);
+    document.getElementById('forum-close-modal').addEventListener('click', () => {
+        document.getElementById('forum-presets-modal').style.display = 'none';
+    });
+}
+// ===============================================================
+// END: 论坛配置功能
+// ===============================================================
+// --- 新代码结束 ---
 // ▼▼▼ 把下面这个完整的 setupForumSystem 函数粘贴在这里 ▼▼▼
 function setupForumSystem() {
     const boards = {
@@ -21467,6 +21991,7 @@ function setupForumSystem() {
                 dropdownMenu.appendChild(item);
             }
         });
+      
     }
 
     function renderThreadList(boardId) {
@@ -23129,18 +23654,18 @@ async function triggerProactiveGroupReply(group) {
  * @param {object} chatObject - The character or group object.
  * @param {string} type - 'private' or 'group'.
  */
+// --- 新代码开始 ---
+
+// --- 新代码开始 ---
+
+// --- 新代码开始 ---
 async function triggerProactiveMessage(chatObject, type) {
     let systemPrompt = '';
-    let promptTitle = '';
-
     if (type === 'private') {
         systemPrompt = `[system: 用户 ${chatObject.myName} 已经有段时间没有回复了。请你根据自己的人设和我们之前的对话，主动发起一个新的话题或者用温柔的方式询问对方正在做什么，来重新激活对话。你的回复必须自然，就像是真实的人在关心对方一样。]`;
-        promptTitle = `${chatObject.remarkName} 主动给你发来了消息...`;
     } else { // group
         systemPrompt = `[system: 用户 ${chatObject.me.nickname} 已经有段时间没有在群里说话了。请你们（AI成员们）根据各自的人设，开始一段自然的群聊来活跃气氛。对话可以围绕最近的话题，也可以开启一个全新的、符合群聊氛围的话题。]`;
-        promptTitle = `群聊 "${chatObject.name}" 有了新消息...`;
     }
-
     const proactivePromptMessage = {
         id: `proactive_${Date.now()}`,
         role: 'user',
@@ -23148,17 +23673,14 @@ async function triggerProactiveMessage(chatObject, type) {
         parts: [{ type: 'text', text: systemPrompt }],
         timestamp: Date.now()
     };
-    
     if (type === 'group') {
         proactivePromptMessage.senderId = 'user_me';
     }
-
     chatObject.history.push(proactivePromptMessage);
 
     try {
         let fullSystemPrompt;
         let historyForApi;
-        
         if (type === 'private') {
             fullSystemPrompt = generatePrivateSystemPrompt(chatObject);
             historyForApi = chatObject.history.slice(-chatObject.maxMemory);
@@ -23166,56 +23688,62 @@ async function triggerProactiveMessage(chatObject, type) {
             fullSystemPrompt = generateGroupSystemPrompt(chatObject);
             historyForApi = chatObject.history.slice(-chatObject.maxMemory);
         }
-
         const messages = [
             { role: 'system', content: fullSystemPrompt },
             ...historyForApi.map(msg => ({ role: msg.role, content: msg.content }))
         ];
-
         const aiResponseText = await callAiApi(messages);
-
         chatObject.history.pop();
         
-        const replies = aiResponseText.split('\n').filter(line => line.trim() !== '');
+        const cleanedResponse = await processAiCommands(aiResponseText, chatObject);
+        const replies = cleanedResponse.split('\n').filter(line => line.trim() !== '');
         
-        for (const replyContent of replies) {
-            const message = {
-                id: `msg_proactive_${Date.now()}_${Math.random()}`,
-                role: 'assistant',
-                content: replyContent.trim(),
-                parts: [{ type: 'text', text: replyContent.trim() }],
-                timestamp: Date.now(),
-            };
-             if (type === 'group') {
-                const nameMatch = replyContent.match(/\[(.*?)(?:的消息|的语音|发送的表情包|发来的照片\/视频)：/);
-                if (nameMatch) {
-                    const sender = chatObject.members.find(m => m.realName === nameMatch[1] || m.groupNickname === nameMatch[1]);
-                    if (sender) {
-                        message.senderId = sender.id;
+        // --- 修改：在这里直接处理消息，不再放入队列 ---
+        if (replies.length > 0) {
+            for (const replyContent of replies) {
+                const message = {
+                    id: `msg_proactive_${Date.now()}_${Math.random()}`,
+                    role: 'assistant',
+                    content: replyContent.trim(),
+                    parts: [{ type: 'text', text: replyContent.trim() }],
+                    timestamp: Date.now(),
+                };
+                if (type === 'group') {
+                    const nameMatch = replyContent.match(/\[(.*?)(?:的消息|的语音|发送的表情包|发来的照片\/视频)：/);
+                    if (nameMatch) {
+                        const sender = chatObject.members.find(m => m.realName === nameMatch[1] || m.groupNickname === nameMatch[1]);
+                        if (sender) {
+                            message.senderId = sender.id;
+                        }
                     }
                 }
+                // 直接将消息添加到历史记录
+                chatObject.history.push(message);
             }
 
-            chatObject.history.push(message);
-        }
+            // 立即保存数据
+            await saveData();
 
-        await saveData();
-        
-        // ▼▼▼ 核心修改在此 ▼▼▼
-        addNotificationToQueue({
-            avatar: chatObject.avatar,
-            text: `<strong>${chatObject.name || chatObject.remarkName}</strong><br>${replies[0]}`,
-            chatId: chatObject.id, // 新增：传递聊天ID
-            type: type             // 新增：传递聊天类型
-        });
-        // ▲▲▲ 修改结束 ▲▲▲
+            // 立即刷新聊天列表UI
+            renderChatList();
+    
+            // 最后再发出通知
+            addNotificationToQueue({
+                avatar: chatObject.avatar,
+                text: `<strong>${chatObject.name || chatObject.remarkName}</strong><br>给你发来了一条新消息...`,
+                chatId: chatObject.id,
+                type: type
+            });
+        }
+        // --- 修改结束 ---
 
     } catch (error) {
         console.error(`AI后台回复失败 for ${chatObject.name || chatObject.remarkName}:`, error);
         chatObject.history.pop();
-        await saveData();
     }
 }
+// --- 新代码结束 ---
+// --- 新代码结束 ---
 /**
  * Triggers an AI to interact with a user's Moment.
  * @param {object} character - The character object that will perform the interaction.
@@ -23589,33 +24117,47 @@ function renderAiBrowserHistory(history) {
 }
 
 
+// --- 新代码开始 ---
 function generateAiBrowserHistoryPrompt(character) {
+    // --- 新增：获取最近的聊天记录作为上下文 ---
+    const memory = character.history.slice(-15);
+    let historyText = memory.map(msg => {
+        const sender = msg.role === 'user' ? character.myName : character.remarkName;
+        const contentMatch = msg.content.match(/\[.*?的消息：([\s\S]+?)\]/);
+        const cleanContent = contentMatch ? contentMatch[1] : msg.content;
+        return `${sender}: ${cleanContent}`;
+    }).join('\n');
+    // --- 新增结束 ---
+
+    // --- 修改：更新了Prompt指令 ---
     let prompt = `你正在扮演角色“${character.realName}”，人设是：${character.persona}。
-请根据你的人设和最近可能会关心的事情，虚构一个包含3-5条的浏览器搜索记录列表。
-规则:
-1. 每条记录都要**非常贴合你的人设**。
-2. 至少有1条记录与“我”（${character.myName}）有关。
-3. 每条记录包含：
+请根据你的人设以及和“我”（${character.myName}）**最近的聊天记录**，虚构一个包含**10条**的浏览器搜索记录列表。
+
+# 规则:
+1.  每条记录都要**非常贴合你的人设和我们的对话上下文**。
+2.  至少有**3-4条**记录需要与“我”（${character.myName}）或我们聊到的话题直接相关。
+3.  每条记录包含：
     - "query": 搜索的关键词。
     - "simulatedUrl": 一个看起来很真实的、虚构的网址。
-    - "contentDetail": 一段详细的、**第一人称叙事风格**的“网页”内容，字数不少于150字。这段内容可以是论坛求助、博客文章、商品评论等，要能反映出你搜索这个词时的心境和目的。请参考用户提供的第二张图片（论坛求助截图）的风格来写。
-4. 你的输出必须是严格的JSON数组格式，不要包含任何其他文字。
+    - "contentDetail": 一段详细的、**第一人称叙事风格**的“网页”内容，字数不少于150字。这段内容要能反映出你搜索这个词时的心境和目的。
+4.  你的输出必须是严格的JSON数组格式，不要包含任何其他文字。
 
-JSON格式示例:
+# 最近的聊天记录参考:
+${historyText}
+
+# JSON格式示例:
 [
   {
     "query": "天蝎座爱情观分析",
     "simulatedUrl": "www.astro.com/zodiac/scorpio-love",
     "contentDetail": "最近总觉得有点看不透他，所以偷偷来查了一下。文章说天蝎座在感情里占有欲很强，外冷内热，一旦爱上就会非常专一。这几点好像还真的有点像他...文章还说他们不轻易表达爱意，但会用行动证明。也许我应该多观察一下细节，而不是总是在意他嘴上说了什么。不过，看到“记仇”这一点，我还是忍不住笑了，下次可不敢惹他生气了。"
-  },
-  {
-    "query": "男朋友总说我像小狗，正常吗？",
-    "simulatedUrl": "www.douban.com/group/topic/284561/",
-    "contentDetail": "发了个帖子求助一下，没想到这么多姐妹有类似的经历。他说我像小狗，有时候是吵架到最后抱着我睡着的时候，迷迷糊糊说一句‘狗东西’。有时候是在床上把他弄得没办法了，他会喘着气骂我‘疯狗’。前几天他甚至让我学狗叫...我没叫，但心里感觉很怪。有点屈辱，但更多的是一种说不出的兴奋。只要他开口，我好像真的什么都愿意做。我一个快三十岁的男人，被人知道了像什么样子？但我就吃他这一套。他说他喜欢我摇尾巴，虽然我没有尾巴。他一笑，我就想摇尾巴。"
   }
 ]`;
+    // --- 修改结束 ---
+    
     return prompt;
 }
+// --- 新代码结束 ---
 function setupAiPhotosApp() {
     document.getElementById('refresh-photos-album-btn').addEventListener('click', async () => {
         if (!currentAiForApp) return;
@@ -29740,6 +30282,84 @@ fileInput.addEventListener('change', async (e)=>{
         </div>
     </div>
 </div>
+
+  <div id="forum-config-screen" class="screen">
+    <header class="app-header">
+        <button class="back-btn" data-target="forum-screen">‹</button>
+        <div class="title-container"><h1 class="title">论坛配置</h1></div>
+        <div class="placeholder"></div>
+    </header>
+    <main class="content" style="padding: 15px;">
+        <div id="forum-presets-control" style="margin-bottom: 20px; padding: 15px; border-radius: 12px; border: 1px solid #fce4ec; background:#fff8fa;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+                <label style="color:var(--secondary-color); font-weight:600;">配置预设</label>
+                <select id="forum-preset-select" style="flex:1; padding:8px; border-radius:8px; border:1px solid #fce4ec;"></select>
+            </div>
+            <div style="display:flex; gap:8px; justify-content:flex-end;">
+                <button id="forum-apply-preset" class="btn btn-primary btn-small">应用</button>
+                <button id="forum-save-preset" class="btn btn-secondary btn-small">另存</button>
+                <button id="forum-manage-presets" class="btn btn-neutral btn-small">管理</button>
+            </div>
+        </div>
+
+        <form id="forum-config-form">
+            <div class="form-group">
+                <label for="forum-worldview">论坛世界观 (权重最高)</label>
+                <textarea id="forum-worldview" rows="5" placeholder="定义整个论坛的基调和背景..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="forum-user-persona">用户人设</label>
+                <textarea id="forum-user-persona" rows="3" placeholder="您在论坛中的身份..."></textarea>
+            </div>
+          <div id="persona-presets-control" style="margin-top: -10px; margin-bottom: 20px; padding: 10px; border-radius: 0 0 12px 12px; border: 1px solid #fce4ec; border-top: none; background:#fff8fa;">
+    <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+        <label style="color:var(--secondary-color); font-weight:600; font-size: 14px;">人设预设</label>
+        <select id="persona-preset-select" style="flex:1; padding:8px; border-radius:8px; border:1px solid #fce4ec;"></select>
+    </div>
+    <div style="display:flex; gap:8px; justify-content:flex-end;">
+        <button type="button" id="persona-apply-preset" class="btn btn-primary btn-small">应用</button>
+        <button type="button" id="persona-save-preset" class="btn btn-secondary btn-small">另存</button>
+        <button type="button" id="persona-manage-presets" class="btn btn-neutral btn-small">管理</button>
+    </div>
+</div>
+            <div class="form-group">
+                <label>参与论坛的角色</label>
+                <ul id="forum-char-selection-list" class="list-container" style="max-height: 150px; overflow-y: auto; border: 1px solid #eee; padding: 10px; border-radius: 8px;"></ul>
+            </div>
+            <div class="form-group">
+                <label>开关选项</label>
+                <div style="background: #fff; padding: 10px; border-radius: 8px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 5px 0;">
+                        <label for="allow-npcs" style="margin:0;">允许路人生成帖子</label>
+                        <input type="checkbox" id="allow-npcs" style="width: auto; height: 20px;">
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 5px 0;">
+                        <label for="allow-unrelated" style="margin:0;">允许生成与角色用户无关帖子</label>
+                        <input type="checkbox" id="allow-unrelated" style="width: auto; height: 20px;">
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 5px 0;">
+                        <label for="allow-romantic-npcs" style="margin:0;">允许路人发布情感向帖子</label>
+                        <input type="checkbox" id="allow-romantic-npcs" style="width: auto; height: 20px;">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                 <button type="button" class="btn btn-secondary" id="link-forum-world-book-btn">关联世界书</button>
+            </div>
+            <button type="submit" class="btn btn-primary">保存设置</button>
+        </form>
+    </main>
+</div>
+
+<div id="forum-presets-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-window" style="max-width:520px;">
+        <h3 style="margin:0 0 10px 0;">管理论坛预设</h3>
+        <div id="forum-presets-list" style="max-height:340px; overflow:auto; margin-bottom:12px;"></div>
+        <div style="display:flex; gap:8px; justify-content:flex-end;">
+            <button id="forum-close-modal" class="btn btn-primary" style="padding:8px 12px;">关闭</button>
+        </div>
+    </div>
+</div>
 <!-- END: 批量添加表情包弹窗 -->
 	<!-- 文件位置: </body> 标签之前 -->
 <input type="file" id="world-book-import-input" accept=".json" style="display: none;" multiple>
@@ -30355,7 +30975,15 @@ fileInput.addEventListener('change', async (e)=>{
 </div>
 <!-- ▲▲▲ 替换结束 ▲▲▲ -->
 <!-- ▲▲▲ 替换结束 ▲▲▲ -->
-
+<div id="persona-presets-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-window" style="max-width:520px;">
+        <h3 style="margin:0 0 10px 0;">管理人设预设</h3>
+        <div id="persona-presets-list" style="max-height:340px; overflow:auto; margin-bottom:12px;"></div>
+        <div style="display:flex; gap:8px; justify-content:flex-end;">
+            <button id="persona-close-modal" class="btn btn-primary" style="padding:8px 12px;">关闭</button>
+        </div>
+    </div>
+</div>
 <!-- ▼▼▼ 将这两个全新的 div 添加到 </body> 标签之前 ▼▼▼ -->
 
 <!-- 1. "找人代付" AI选择弹窗 -->
