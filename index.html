@@ -7459,15 +7459,32 @@ const locationBtn = document.getElementById('location-btn'),
         const saveData = async (data) => {
             const dbData = data ? data : db;
 
-            // 分离消息数据和基础数据
-              const { characters, groups, worldBooks, ...baseData } = dbData;
+            // 修改：分离出所有需要独立保存的重要数据
+            const { 
+                characters, 
+                groups, 
+                worldBooks, 
+                apiSettings,
+                customIcons,
+                wallpaper,
+                wallpaper2,
+                aiSpaceWallpaper,
+                homeProfile,
+                // ... 你未来可能增加的其他顶层复杂数据
+                ...baseData // 剩余的简单数据
+            } = dbData;
 
-            // 保存基础数据
+            // 保存剩余的基础数据
             await dataStorage.saveData('章鱼喷墨机', baseData);
-            // 新增：单独保存 worldBooks 数组
-            if (worldBooks) {
-                await dataStorage.saveData('worldBooks_data', worldBooks);
-            }
+
+            // 新增：为每一项重要数据创建独立的保存通道
+            if (worldBooks) await dataStorage.saveData('worldBooks_data', worldBooks);
+            if (apiSettings) await dataStorage.saveData('apiSettings_data', apiSettings);
+            if (customIcons) await dataStorage.saveData('customIcons_data', customIcons);
+            if (wallpaper) await dataStorage.saveData('wallpaper_data', wallpaper);
+            if (wallpaper2) await dataStorage.saveData('wallpaper2_data', wallpaper2);
+            if (aiSpaceWallpaper) await dataStorage.saveData('aiSpaceWallpaper_data', aiSpaceWallpaper);
+            if (homeProfile) await dataStorage.saveData('homeProfile_data', homeProfile);
 
 
             // 分别保存角色和群组数据（包含消息）
@@ -7540,6 +7557,15 @@ const locationBtn = document.getElementById('location-btn'),
             if (data) {
                 db = { ...db, ...data };
             }
+    // --- 新增：从独立通道加载所有重要数据 ---
+            db.worldBooks = await dataStorage.getData('worldBooks_data') || [];
+            db.apiSettings = await dataStorage.getData('apiSettings_data') || {};
+            db.customIcons = await dataStorage.getData('customIcons_data') || {};
+            db.wallpaper = await dataStorage.getData('wallpaper_data') || 'https://i.postimg.cc/W4Z9R9x4/ins-1.jpg';
+            db.wallpaper2 = await dataStorage.getData('wallpaper2_data') || 'https://i.postimg.cc/W4Z9R9x4/ins-1.jpg';
+            db.aiSpaceWallpaper = await dataStorage.getData('aiSpaceWallpaper_data') || '';
+            db.homeProfile = await dataStorage.getData('homeProfile_data') || { name: '点击设置昵称', signature: '点击设置个性签名', avatar: 'https://i.postimg.cc/GtbTnxhP/o-o-1.jpg', heroBg: 'https://i.postimg.cc/wM57022X/image.png' };
+            // --- 新增结束 ---
 
             // (在 loadData 函数内部，靠近其他 if (!db.xxx) 的地方添加)
 if (!db.avatarFrames) {
@@ -12011,104 +12037,121 @@ function renderCustomizeForm() {
             backupDataBtn.textContent = '备份数据';
             backupDataBtn.disabled = loadingBtn
 
-            backupDataBtn.addEventListener('click', async () => {
-                if(loadingBtn){
-                    return
-                }
-                loadingBtn = true
+         backupDataBtn.addEventListener('click', async () => {
+                if(loadingBtn) return;
+                loadingBtn = true;
                 try {
-                    // ▼▼▼ 第1步：在这里添加代码 ▼▼▼
-                    // 在打包主数据之前，先从“动态”数据库中读取所有动态
+                    // 新增：收集所有localStorage中的预设数据
+                    const localStorageData = {};
+                    const presetKeys = ['fontPresets', 'apiPresets', 'bubblePresets', 'myPersonaPresets'];
+                    presetKeys.forEach(key => {
+                        const data = localStorage.getItem(key);
+                        if (data) {
+                            localStorageData[key] = data;
+                        }
+                    });
+
                     if (window.AppDB_Moments && window.AppDB_Moments.moments) {
-                        const momentsData = await window.AppDB_Moments.moments.toArray();
-                        // 临时将动态数据附加到主 `db` 对象上，以便一起备份
-                        db.momentsData = momentsData;
+                        db.momentsData = await window.AppDB_Moments.moments.toArray();
                     }
-                    // ▲▲▲ 添加结束 ▲▲▲
 
-                    const jsonString = JSON.stringify(db);
+                    // 新增：创建一个包含所有数据的备份对象
+                    const backupObject = {
+                        dbData: db,
+                        localStorageData: localStorageData
+                    };
+
+                    const jsonString = JSON.stringify(backupObject);
                     const dataBlob = new Blob([jsonString]);
-
-                    // Compress the data using Gzip
                     const compressionStream = new CompressionStream('gzip');
                     const compressedStream = dataBlob.stream().pipeThrough(compressionStream);
                     const compressedBlob = await new Response(compressedStream).blob();
-
                     const url = URL.createObjectURL(compressedBlob);
                     const a = document.createElement('a');
                     const now = new Date();
-                    const date = now.toISOString().slice(0, 10);
-                    const time = now.toTimeString().slice(0, 8).replace(/:/g, '');
                     a.href = url;
-                    a.download = `章鱼喷墨_备份数据_${date}_${time}.ee`;
+                    a.download = `章鱼喷墨_备份数据_${now.toISOString().slice(0, 10)}_${now.toTimeString().slice(0, 8).replace(/:/g, '')}.ee`;
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
                     URL.revokeObjectURL(url);
                     
-                    // ▼▼▼ 在备份完成后，清理掉临时的动态数据 ▼▼▼
                     if (db.momentsData) {
                         delete db.momentsData;
                     }
-                    // ▲▲▲ 清理结束 ▲▲▲
 
-                    loadingBtn = false
-                    showToast('聊天记录导出成功');
-                }catch (e){
+                    loadingBtn = false;
+                    showToast('完整数据备份成功！');
+                } catch (e) {
                     showToast(`导出失败, 发生错误: ${e.message}`);
                 }
             });
+
             const importDataBtn = document.createElement('label');
             importDataBtn.className = 'btn btn-neutral';
             importDataBtn.textContent = '导入数据';
-            importDataBtn.style.marginTop = '15px'
-            importDataBtn.style.display = 'block'
+            importDataBtn.style.marginTop = '15px';
+            importDataBtn.style.display = 'block';
             importDataBtn.disabled = loadingBtn;
-            importDataBtn.setAttribute('for', 'import-data-input')
+            importDataBtn.setAttribute('for', 'import-data-input');
+            
+            // --- 修改：更新导入逻辑 ---
             document.querySelector('#import-data-input').addEventListener('change', async (event) => {
                 const file = event.target.files[0];
                 if (!file) return;
 
-                if(confirm('此操作将覆盖当前所有聊天记录和设置。此操作不可撤销。确定要继续吗？')){
+                if(confirm('此操作将覆盖当前所有数据（包括聊天、设置和预设）。此操作不可撤销。确定要继续吗？')){
                     try {
-                        // Decompress the file stream
                         const decompressionStream = new DecompressionStream('gzip');
                         const decompressedStream = file.stream().pipeThrough(decompressionStream);
                         const jsonString = await new Response(decompressedStream).text();
+                        const importedObject = JSON.parse(jsonString);
 
-                        let data = JSON.parse(jsonString);
+                        let dbDataToSave;
 
-                        // 1. 清空所有现有数据
+                        // 新增：检查是新格式还是旧格式的备份
+                        if (importedObject.dbData) { // 新格式
+                            // 恢复localStorage中的预设
+                            if (importedObject.localStorageData) {
+                                Object.entries(importedObject.localStorageData).forEach(([key, value]) => {
+                                    localStorage.setItem(key, value);
+                                });
+                            }
+                            dbDataToSave = importedObject.dbData;
+                        } else { // 旧格式
+                            dbDataToSave = importedObject;
+                            showToast('提示：正在导入旧版备份，部分设置（如预设）可能不会被恢复。');
+                        }
+
+                        // 清空旧数据
                         await dataStorage.clearAll();
                         if (window.AppDB_Moments && window.AppDB_Moments.moments) {
                             await window.AppDB_Moments.moments.clear();
                         }
-
-                        // 2. 恢复动态数据 (如果存在)
-                        if (data.momentsData && Array.isArray(data.momentsData)) {
-                            const momentsToRestore = data.momentsData;
-                            delete data.momentsData; // 从主数据中移除，避免被错误保存
-                            if (window.AppDB_Moments && window.AppDB_Moments.moments) {
-                                await window.AppDB_Moments.moments.bulkPut(momentsToRestore);
-                                console.log(`${momentsToRestore.length} 条动态已成功恢复。`);
+                        
+                        // 恢复动态数据
+                        if (dbDataToSave.momentsData && Array.isArray(dbDataToSave.momentsData)) {
+                             if (window.AppDB_Moments && window.AppDB_Moments.moments) {
+                                await window.AppDB_Moments.moments.bulkPut(dbDataToSave.momentsData);
                             }
+                            delete dbDataToSave.momentsData;
                         }
                         
-                        // 3. 保存新的主数据
-                        await saveData(data);
+                        // 保存新的主数据
+                        await saveData(dbDataToSave);
                         showToast(`数据已成功恢复。应用即将刷新。`);
-                        setTimeout(() => window.location.reload(), 1500); // 延迟刷新以确保toast可见
+                        setTimeout(() => window.location.reload(), 1500);
+
                     } catch (error) {
                         console.error("导入失败:", error);
-                        showToast(`解压或解析文件时发生错误: ${error.message}`);
+                        showToast(`导入或解析文件时发生错误: ${error.message}`);
                     } finally {
                         event.target.value = null;
                     }
-                }else {
+                } else {
                     event.target.value = null;
                 }
-
-            })
+            });
 
             tutorialContentArea.appendChild(backupDataBtn);
             tutorialContentArea.appendChild(importDataBtn);
