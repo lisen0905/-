@@ -10761,14 +10761,16 @@ renderWorldBookList = function() {
     const hasContent = db.worldBooks.length > 0 || db.worldBookCategories.length > 0;
     noWorldBooksPlaceholder.style.display = hasContent ? 'none' : 'block';
 
-    const renderBooks = (books) => {
+  const renderBooks = (books) => {
         let html = '';
         books.forEach(book => {
             html += `
                 <li class="list-item world-book-item" data-id="${book.id}">
                     <div class="item-details" style="padding-left: 20px;">
-                        <div class="item-name">${book.name}</div>
-                        <div class="item-preview">${book.content}</div>
+                      
+                        <div class="item-name">${escapeHTML(book.name)}</div>
+                      
+                        <div class="item-preview">${escapeHTML(book.content)}</div>
                     </div>
                 </li>`;
         });
