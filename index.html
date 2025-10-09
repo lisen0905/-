@@ -22567,8 +22567,19 @@ function setupHomeScreenProfileEditor() {
         avatarImg.src = profile.avatar;
         nameEl.textContent = profile.name;
         signatureEl.textContent = profile.signature;
+    
+  // ▼▼▼ 在这里添加新的代码 ▼▼▼
+        // 新增：同时更新商城个人中心的显示
+        const mallAvatarImg = document.getElementById('profile-avatar');
+        const mallUsernameEl = document.getElementById('profile-username');
+        if (mallAvatarImg) {
+            mallAvatarImg.src = profile.avatar;
+        }
+        if (mallUsernameEl) {
+            mallUsernameEl.textContent = profile.name;
+        }
+        // ▲▲▲ 添加结束 ▲▲▲
     }
-
     // 2. 保存函数 (保持不变)
     async function saveProfile() {
         await saveData();
