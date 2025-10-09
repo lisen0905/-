@@ -7592,7 +7592,17 @@ const locationBtn = document.getElementById('location-btn'),
                 db.worldBooks = [];
             }
             // --- 迁移逻辑结束 ---
-
+  // ▼▼▼ 在这里添加新的代码 ▼▼▼
+            // --- 新增：为旧版世界书数据添加分类兼容 ---
+            if (db.worldBooks && db.worldBooks.length > 0) {
+                db.worldBooks.forEach(book => {
+                    if (book.categoryId === undefined) {
+                        book.categoryId = 'uncategorized';
+                    }
+                });
+            }
+            // --- 兼容代码结束 ---
+            // ▲▲▲ 添加结束 ▲▲▲
             db.apiSettings = await dataStorage.getData('apiSettings_data') || {};
             db.customIcons = await dataStorage.getData('customIcons_data') || {};
             db.wallpaper = await dataStorage.getData('wallpaper_data') || 'https://i.postimg.cc/W4Z9R9x4/ins-1.jpg';
